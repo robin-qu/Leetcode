@@ -7,34 +7,6 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
-// class Solution {
-//     public int minDepth(TreeNode root) {
-//         if (root == null) return 0;
-//         Stack<TreeNode> s1 = new Stack<TreeNode>();
-//         Stack<Integer> s2 = new Stack<Integer>();
-//         int min = Integer.MAX_VALUE;
-//         s1.push(root);
-//         s2.push(1);
-//         while (!s1.isEmpty()) {
-//             TreeNode temp = s1.pop();
-//             int tempLevel = s2.pop();
-//             if (temp != null) {
-//                 if (temp.left == null && temp.right == null) {
-//                     min = Math.min(min, tempLevel);
-//                 }
-//                 s1.push(temp.left);
-//                 s2.push(tempLevel + 1);
-//                 s1.push(temp.right);
-//                 s2.push(tempLevel + 1);
-//             }
-//         }
-//         return min;
-//     }
-// }
-
-
-
-
 // // Traversal
 // class Solution {
 //     public int minDepth(TreeNode root) {
