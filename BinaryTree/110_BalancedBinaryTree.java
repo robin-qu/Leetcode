@@ -43,18 +43,33 @@
 //     }
 // }
 
-// Traversal
+// // Traversal
+// class Solution {
+//     public boolean isBalanced(TreeNode root) {
+//         if (root == null) {
+//             return true;
+//         }
+        
+//         boolean condition1 = Math.abs(getHeight(root.left) - getHeight(root.right)) < 2;
+//         boolean condition2 = isBalanced(root.left);
+//         boolean condition3 = isBalanced(root.right);
+        
+//         return condition1 && condition2 && condition3;
+//     }
+    
+//     private int getHeight(TreeNode node) {
+//         if (node == null) {
+//             return 0;
+//         }
+        
+//         return 1 + Math.max(getHeight(node.left), getHeight(node.right));
+//     }
+// }
+
+// DFS
 class Solution {
     public boolean isBalanced(TreeNode root) {
-        if (root == null) {
-            return true;
-        }
-        
-        boolean condition1 = Math.abs(getHeight(root.left) - getHeight(root.right)) < 2;
-        boolean condition2 = isBalanced(root.left);
-        boolean condition3 = isBalanced(root.right);
-        
-        return condition1 && condition2 && condition3;
+        return getHeight(root) != -1;
     }
     
     private int getHeight(TreeNode node) {
@@ -62,6 +77,13 @@ class Solution {
             return 0;
         }
         
-        return 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        int left = getHeight(node.left);
+        int right = getHeight(node.right);
+        
+        if (left == -1 || right == -1 || Math.abs(left - right) > 1) {
+            return -1;
+        }
+        
+        return 1 + Math.max(left, right);
     }
 }
