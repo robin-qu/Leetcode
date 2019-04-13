@@ -7,41 +7,37 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
-// // Divide and Conquer
-// class ResultType {
-//     public int height;
-//     public boolean isBalanced;
+// Divide and Conquer
+class ResultType {
+    public int height;
+    public boolean isBalanced;
     
-//     public ResultType(int height, boolean isBalanced) {
-//         this.height = height;
-//         this.isBalanced = isBalanced;
-//     }
-// }
+    public ResultType(int height, boolean isBalanced) {
+        this.height = height;
+        this.isBalanced = isBalanced;
+    }
+}
 
-// class Solution {
-//     public boolean isBalanced(TreeNode root) {
-//         return helper(root).isBalanced;   
-//     }
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return helper(root).isBalanced;   
+    }
     
-//     public ResultType helper(TreeNode root) {
-//         if (root == null) {
-//             return new ResultType(0, true);
-//         }
+    public ResultType helper(TreeNode root) {
+        if (root == null) {
+            return new ResultType(0, true);
+        }
         
-//         ResultType left = helper(root.left);
-//         ResultType right = helper(root.right);
+        ResultType left = helper(root.left);
+        ResultType right = helper(root.right);
         
-//         if (!left.isBalanced || !right.isBalanced) {
-//             return new ResultType(-1, false);
-//         }
+        boolean isBalanced = left.isBalanced && 
+                    right.isBalanced && 
+                    Math.abs(left.height - right.height) <= 1;
         
-//         if (Math.abs(left.height - right.height) > 1) {
-//             return new ResultType(-1, false);
-//         }
-        
-//         return new ResultType(1 + Math.max(left.height, right.height), true);
-//     }
-// }
+        return new ResultType(1 + Math.max(left.height, right.height), isBalanced);
+    }
+}
 
 // // Traversal
 // class Solution {
@@ -66,24 +62,24 @@
 //     }
 // }
 
-// DFS
-class Solution {
-    public boolean isBalanced(TreeNode root) {
-        return getHeight(root) != -1;
-    }
+// // DFS
+// class Solution {
+//     public boolean isBalanced(TreeNode root) {
+//         return getHeight(root) != -1;
+//     }
     
-    private int getHeight(TreeNode node) {
-        if (node == null) {
-            return 0;
-        }
+//     private int getHeight(TreeNode node) {
+//         if (node == null) {
+//             return 0;
+//         }
         
-        int left = getHeight(node.left);
-        int right = getHeight(node.right);
+//         int left = getHeight(node.left);
+//         int right = getHeight(node.right);
         
-        if (left == -1 || right == -1 || Math.abs(left - right) > 1) {
-            return -1;
-        }
+//         if (left == -1 || right == -1 || Math.abs(left - right) > 1) {
+//             return -1;
+//         }
         
-        return 1 + Math.max(left, right);
-    }
-}
+//         return 1 + Math.max(left, right);
+//     }
+// }

@@ -99,7 +99,6 @@ public class Solution {
 //      */
 //     public TreeNode findSubtree(TreeNode root) {
 //         Stack<TreeNode> stack = new Stack<>();
-//         Stack<Integer> sums = new Stack<>();
 //         int min = Integer.MAX_VALUE;
 //         TreeNode res = null;
         
@@ -108,11 +107,10 @@ public class Solution {
 //         }
         
 //         stack.push(root);
-//         sums.push(getSum(root));
         
 //         while (!stack.isEmpty()) {
 //             TreeNode curr = stack.pop();
-//             int sum = sums.pop();
+//             int sum = getSum(curr);
             
 //             if (sum < min) {
 //                 res = curr;
@@ -120,12 +118,10 @@ public class Solution {
             
 //             if (curr.left != null) {
 //                 stack.push(curr.left);
-//                 sums.push(getSum(curr.left));
 //             }
             
 //             if (curr.right != null) {
 //                 stack.push(curr.right);
-//                 sums.push(getSum(curr.right));
 //             }
 //         }
         
@@ -150,7 +146,6 @@ public class Solution {
 //      */
 //     public TreeNode findSubtree(TreeNode root) {
 //         Queue<TreeNode> queue = new LinkedList<>();
-//         Queue<Integer> sums = new LinkedList<>();
 //         int min = Integer.MAX_VALUE;
 //         TreeNode res = null;
         
@@ -159,11 +154,10 @@ public class Solution {
 //         }
         
 //         queue.add(root);
-//         sums.add(getSum(root));
         
 //         while (!queue.isEmpty()) {
 //             TreeNode curr = queue.remove();
-//             int sum = sums.remove();
+//             int sum = getSum(curr);
             
 //             if (sum < min) {
 //                 res = curr;
@@ -171,12 +165,10 @@ public class Solution {
             
 //             if (curr.left != null) {
 //                 queue.add(curr.left);
-//                 sums.add(getSum(curr.left));
 //             }
             
 //             if (curr.right != null) {
 //                 queue.add(curr.right);
-//                 sums.add(getSum(curr.right));
 //             }
 //         }
         
