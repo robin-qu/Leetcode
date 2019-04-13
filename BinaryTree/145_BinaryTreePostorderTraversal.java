@@ -45,28 +45,50 @@
 //     }
 // }
 
-// Iterative
+// // Iterative version II
+// class Solution {
+//     public List<Integer> postorderTraversal(TreeNode root) {
+//         List<Integer> res = new LinkedList<>();
+//         Stack<TreeNode> stack = new Stack<>();
+        
+//         if (root == null) {
+//             return res;
+//         }
+        
+//         stack.push(root);
+        
+//         while (!stack.isEmpty()) {
+//             TreeNode curr = stack.pop();
+//             res.add(0, curr.val);
+            
+//             if (curr.left != null) {
+//                 stack.push(curr.left);
+//             }
+//             if (curr.right != null) {
+//                 stack.push(curr.right);
+//             }
+//         }
+        
+//         return res;
+//     }
+// }
+
+// Iterative version II
 class Solution {
     public List<Integer> postorderTraversal(TreeNode root) {
         List<Integer> res = new LinkedList<>();
         Stack<TreeNode> stack = new Stack<>();
+        TreeNode curr = root;
         
-        if (root == null) {
-            return res;
-        }
-        
-        stack.push(root);
-        
-        while (!stack.isEmpty()) {
-            TreeNode curr = stack.pop();
-            res.add(0, curr.val);
+        while (curr != null || !stack.isEmpty()) {
+            while (curr != null) {
+                stack.push(curr);
+                res.add(0, curr.val);
+                curr = curr.right;
+            }
             
-            if (curr.left != null) {
-                stack.push(curr.left);
-            }
-            if (curr.right != null) {
-                stack.push(curr.right);
-            }
+            curr = stack.pop();
+            curr = curr.left;
         }
         
         return res;

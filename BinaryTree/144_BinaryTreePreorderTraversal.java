@@ -40,34 +40,57 @@
 //         res.add(root.val);
 //         res.addAll(leftList);
 //         res.addAll(rightList);
+
 //         return res;
 //     }
 // }
 
-// Iterative
+// // Iterative version I
+// class Solution {
+//     public List<Integer> preorderTraversal(TreeNode root) {
+//         Stack<TreeNode> s = new Stack<>();
+//         List<Integer> res = new LinkedList<>();
+        
+//         if (root == null) {
+//             return res;
+//         }
+        
+//         s.push(root);
+        
+//         while (!s.isEmpty()) {
+//             TreeNode curr = s.pop();
+//             res.add(curr.val);
+            
+//             if (curr.right != null) {
+//                 s.push(curr.right);
+//             }
+//             if (curr.left != null) {
+//                 s.push(curr.left);
+//             }
+//         }
+        
+//         return res;        
+//     }
+// }
+
+// Iterative version II
 class Solution {
     public List<Integer> preorderTraversal(TreeNode root) {
-        Stack<TreeNode> s = new Stack<>();
         List<Integer> res = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode curr = root;
         
-        if (root == null) {
-            return res;
-        }
-        
-        s.push(root);
-        
-        while (!s.isEmpty()) {
-            TreeNode curr = s.pop();
-            res.add(curr.val);
+        while (curr != null || !stack.isEmpty()) {
+            while (curr != null) {
+                stack.push(curr);
+                res.add(curr.val);
+                curr = curr.left;
+            }
             
-            if (curr.right != null) {
-                s.push(curr.right);
-            }
-            if (curr.left != null) {
-                s.push(curr.left);
-            }
+            curr = stack.pop();
+            curr = curr.right;
         }
         
-        return res;        
+        return res;
     }
 }
