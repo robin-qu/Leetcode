@@ -42,7 +42,7 @@ public class Solution {
         
         ResultType left = helper(node.left);
         ResultType right = helper(node.right);
-        ResultType curr = new ResultType(0, 0, 0);
+        ResultType curr = new ResultType(1, 1, 0);
         
         if (node.left != null) {
             if (node.val - 1 == node.left.val) {
@@ -64,7 +64,7 @@ public class Solution {
             }
         }
         
-        curr.longest = Math.max(1 + curr.up + curr.down, 
+        curr.longest = Math.max(curr.up + curr.down - 1, 
                             Math.max(left.longest, right.longest));
         
         return curr;
