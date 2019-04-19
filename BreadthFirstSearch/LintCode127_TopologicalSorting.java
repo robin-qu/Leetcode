@@ -47,16 +47,11 @@ public class Solution {
         Map<DirectedGraphNode, Integer> indegree = new HashMap<>();
         
         for (DirectedGraphNode node : graph) {
-            if (!indegree.containsKey(node)) {
-                indegree.put(node, 0);
-            }
+            indegree.putIfAbsent(node, 0);
             
             for (DirectedGraphNode neighbor : node.neighbors) {
-                if (!indegree.containsKey(neighbor)) {
-                    indegree.put(neighbor, 1);
-                } else {
-                    indegree.put(neighbor, indegree.get(neighbor) + 1);
-                }
+                indegree.putIfAbsent(neighbor, 0);
+                indegree.put(neighbor, indegree.get(neighbor) + 1);
             }
         }
         
