@@ -36,16 +36,16 @@ public class Solution {
         }
         
         ListNode slow = head;
-        ListNode fast = head.next;
+        ListNode fast = head;
         
-        while (slow != fast) {
-            if (fast == null || fast.next == null) {
-                return false;
-            }
+        while (fast != null && fast.next != null) {
             fast = fast.next.next;
             slow = slow.next;
+            if (slow == fast) {
+                return true;
+            }
         }
         
-        return true;
+        return false;
     }
 }
