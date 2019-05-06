@@ -67,38 +67,38 @@
 //     }
 // }
 
+// Recursive
 class Solution {
+    private int pos;
+    
     public String decodeString(String s) {
-        Stack<Object> stack = new Stack<>();
-        
+        pos = 0;
+        return helper(s);
+    }
+    
+    private String helper(String s) {
         int count = 0;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
+        String str = "";
+        
+        for (; pos < s.length(); pos++) {
+            char c = s.charAt(pos);
+            
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-                stack.push(String.valueOf(c));
+                str += c;
             } else if (c >= '0' && c <= '9') {
-                count = count * 10 + (c - '0');
+                count = count * 10 + c - '0';
             } else if (c == '[') {
-                stack.push(count);
+                pos++;
+                String sub = helper(s);
+                for (int i = 0; i < count; i++) {
+                    str += sub;
+                }
                 count = 0;
-            } else {    // right bracket
-                String str = "";
-                while (!stack.isEmpty() && !(stack.peek() instanceof Integer)) {
-                    str = stack.pop() + str;
-                }
-                if (!stack.isEmpty()) {  // integer
-                    int repeat = (int) stack.pop();
-                    for (int j = 0; j < repeat; j++) {
-                        stack.push(str);
-                    }
-                }
+            } else {
+                return str;
             }
         }
         
-        String res = "";
-        while (!stack.isEmpty()) {
-            res = (String) stack.pop() + res;
-        }
-        return res;
+        return str;
     }
 }
