@@ -39,9 +39,9 @@ class Solution {
 
         for (int i = 1; i < n; i++) {
             int lastNumber = uglys.get(i - 1);
-            if (uglys.get(p2) * 2 <= lastNumber) p2++;
-            if (uglys.get(p3) * 3 <= lastNumber) p3++;
-            if (uglys.get(p5) * 5 <= lastNumber) p5++;
+            while (uglys.get(p2) * 2 <= lastNumber) p2++;
+            while (uglys.get(p3) * 3 <= lastNumber) p3++;
+            while (uglys.get(p5) * 5 <= lastNumber) p5++;
             
             uglys.add(Math.min(
                 Math.min(uglys.get(p2) * 2, uglys.get(p3) * 3),
