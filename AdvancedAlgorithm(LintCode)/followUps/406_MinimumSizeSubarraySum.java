@@ -86,7 +86,7 @@ public class Solution {
                 right++;
             }
             
-            if (sum >= s) {  // needs to check if sum is bigger than s, since right can >= n
+            if (sum >= s) {  // needs to check if sum is bigger than s, since right can >= n 
                 minSize = Math.min(minSize, right - left);
             }
             
