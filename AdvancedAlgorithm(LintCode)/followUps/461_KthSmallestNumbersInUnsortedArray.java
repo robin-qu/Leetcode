@@ -61,7 +61,7 @@
 //     }
 // }
 
-// more concise
+// <=
 public class Solution {
     /**
      * @param k: An integer
@@ -100,13 +100,24 @@ public class Solution {
             }
         }
         
+        
+        // left ... bigger  k-1  smaller ... right
         if (k - 1 <= bigger && bigger >= left) {
             return quickSelect(k, nums, left, bigger);
         } else if (k - 1 >= left && smaller <= right) {
             return quickSelect(k, nums, smaller, right);
         } else {
-            return nums[bigger];
+            return nums[k - 1];
         }
+        
+        // // another way to represent:
+        // if (bigger < k - 1 && k - 1 < smaller) {
+        //     return nums[k - 1];
+        // } else if (k - 1 <= bigger && bigger >= left) {
+        //     return quickSelect(k, nums, left, bigger);
+        // } else {
+        //     return quickSelect(k, nums, smaller, right);
+        // }
     }
     
     private void swap(int[] nums, int i, int j) {
