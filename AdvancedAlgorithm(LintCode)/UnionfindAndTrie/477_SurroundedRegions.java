@@ -90,55 +90,42 @@
 // }
 
 
-// Union Find
-public class Solution {
+// // Union Find
+class Solution {
     /*
      * @param board: board a 2D board containing 'X' and 'O'
      * @return: nothing
      */
-    
-    class Pair {
-        public int x;
-        public int y;
-        
-        public Pair(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
-    
-    private Pair[][] unionfind;
+     
+    private int[] unionfind;
     
     public void surroundedRegions(char[][] board) {
         if (board == null || board.length == 0 || 
             board[0] == null || board[0].length == 0) {
-                return;
+            return;
         }
         
         int m = board.length;
         int n = board[0].length;
-        this.unionfind = new Pair[m + 1][n + 1];
-        for (int i = 0; i <= m; i++) {
-            for (int j = 0; j <= n; j++) {
-                unionfind[i][j] = null;
-            }
+        this.unionfind = new int[m * n + 1];  // with an extra dummy position
+        for (int i = 0; i <= m * n; i++) {
+            unionfind[i] = i;
         }
         
-        //Pair dummy = new Pair(m, n);
         int[] dX = new int[]{0, 1, -1, 0};
         int[] dY = new int[]{1, 0, 0, -1};
         
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (board[i][j] == 'O') {
-                    if (atEdge(i, j, board)) {
-                        connect(m, n, i, j);
+                    if (atEdge(i, j, m, n)) {
+                        connect(m * n, i * n + j);
                     } else {
                         for (int k = 0; k < 4; k++) {
                             int x = i + dX[k];
                             int y = j + dY[k];
-                            if (inBound(x, y, board) && board[x][y] == 'O') {
-                                connect(x, y, i, j);
+                            if (inBound(x, y, m, n) && board[x][y] == 'O') {
+                                connect(x * n + y, i * n + j);
                             }
                         }
                     }
@@ -148,48 +135,45 @@ public class Solution {
         
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (board[i][j] == 'O' && !equals(find(m, n), find(i, j))) {
+                if (board[i][j] == 'O' && find(m * n) != find(i * n + j)) {
                     board[i][j] = 'X';
                 }
             }
         }
     }
     
-    private Pair find(int i, int j) {
-        Pair root = new Pair(i, j);
+    private int find(int a) {
+        int root = a;
         
-        while (unionfind[root.x][root.y] != null) {
-            root = unionfind[root.x][root.y];
+        while (unionfind[root] != root) {
+            root = unionfind[root];
         }
         
-        Pair curr = new Pair(i, j);
+        int curr = a;
         
-        while (!equals(curr, root)) {
-            Pair parent = unionfind[curr.x][curr.y];
-            unionfind[curr.x][curr.y] = root;
+        while (curr != root) {
+            int parent = unionfind[curr];
+            unionfind[curr] = root;
             curr = parent;
         }
         
         return root;
     }
     
-    private void connect(int ax, int ay, int bx, int by) {
-        Pair rootA = find(ax, ay);
-        Pair rootB = find(bx, by);
-        if (!equals(rootA, rootB)) {
-            unionfind[bx][by] = rootA;
+    private void connect(int a, int b) {
+        int rootA = find(a);
+        int rootB = find(b);
+        if (rootA != rootB) {
+            unionfind[rootB] = rootA;
         }
+        
     }
     
-    private boolean equals(Pair a, Pair b) {
-        return a.x == b.x && a.y == b.y;
+    private boolean atEdge(int i, int j, int m, int n) {
+        return i == 0 || j == 0 || i == m - 1 || j == n - 1;
     }
     
-    private boolean atEdge(int i, int j, char[][] board) {
-        return i == 0 || j == 0 || i == board.length - 1 || j == board[0].length - 1;
-    }
-    
-    private boolean inBound(int i, int j, char[][] board) {
-        return i >= 0 && j >= 0 && i < board.length && j < board[0].length;
+    private boolean inBound(int i, int j, int m, int n) {
+        return i >= 0 && j >= 0 && i < m && j < n;
     }
 }
