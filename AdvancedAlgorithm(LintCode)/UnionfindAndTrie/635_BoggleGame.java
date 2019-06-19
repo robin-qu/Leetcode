@@ -64,8 +64,9 @@ public class Solution {
         
         curr = curr.sons[c - 'a'];
         
-        board[i][j] = '*';
+        board[i][j] = '*';  // mark i, j position as visited
         
+        // current node is a word
         if (curr.word != null) {
             list.add(curr.word);
             max = Math.max(max, list.size());
@@ -79,6 +80,7 @@ public class Solution {
             return;
         }
         
+        // current node is not a word
         for (int k = 0; k < 4; k++) {
             int newX = i + dx[k];
             int newY = j + dy[k];
@@ -87,7 +89,7 @@ public class Solution {
             }
         }
         
-        board[i][j] = c;
+        board[i][j] = c;  // release position i, j as free
     }
     
     private boolean inBound(int i, int j, char[][] board) {
