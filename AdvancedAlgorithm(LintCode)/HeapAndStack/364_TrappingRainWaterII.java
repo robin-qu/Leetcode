@@ -28,17 +28,16 @@ public class Solution {
         
         int m = heights.length;
         int n = heights[0].length;
-        int[][] water = new int[m][n];
         boolean[][] visited = new boolean[m][n];
         int[] dx = new int[]{0, 1, -1, 0};
         int[] dy = new int[]{1, 0, 0, -1};
         
         PriorityQueue<Pair> pq = new PriorityQueue<>();
+        int res = 0;
         
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (i == 0 || j == 0 || i == m - 1 || j == n - 1) {
-                    water[i][j] = heights[i][j];
                     pq.offer(new Pair(i, j, heights[i][j]));
                     visited[i][j] = true;
                 }
@@ -59,21 +58,11 @@ public class Solution {
                     continue;
                 }
                 
-                if (val > heights[nx][ny]) {
-                    water[nx][ny] = val;
-                } else {
-                    water[nx][ny] = heights[nx][ny];
-                }
+                int waterHeight = Math.max(val, heights[nx][ny]);
+                res += waterHeight - heights[nx][ny];
                 
-                pq.offer(new Pair(nx, ny, water[nx][ny]));
+                pq.offer(new Pair(nx, ny, waterHeight));
                 visited[nx][ny] = true;
-            }
-        }
-        
-        int res = 0;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                res += water[i][j] - heights[i][j];
             }
         }
         
