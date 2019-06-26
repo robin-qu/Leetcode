@@ -36,7 +36,7 @@ public class Solution {
             }
         }
         
-        return stack.isEmpty() ? null : stack.peek();
+        return stack.isEmpty() ? null : stack.peek(); 
     }
     
     private List<String> toPolish(String[] expression) {
