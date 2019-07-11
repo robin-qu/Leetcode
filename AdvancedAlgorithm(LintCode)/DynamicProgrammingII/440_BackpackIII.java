@@ -108,9 +108,7 @@ public class Solution {
         int max = 0;
         for (int i = 1; i <= n; i++) {
             for (int j = A[i - 1]; j <= m; j++) {
-                if (A[i - 1] <= j) {
-                    dp[j] = Math.max(dp[j], dp[j - A[i - 1]] + V[i - 1]);
-                }
+                dp[j] = Math.max(dp[j], dp[j - A[i - 1]] + V[i - 1]);
                 
                 max = Math.max(max, dp[j]);
             }
