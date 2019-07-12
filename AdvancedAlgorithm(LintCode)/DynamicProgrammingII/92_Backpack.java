@@ -40,7 +40,54 @@
 // }
 
 
-// O(m) space dp
+// // O(m) space dp
+// public class Solution {
+//     /**
+//      * @param m: An integer m denotes the size of a backpack
+//      * @param A: Given n items with size A[i]
+//      * @return: The maximum size
+//      */
+//     public int backPack(int m, int[] A) {
+//         if (A == null || A.length == 0 || m <= 0) {
+//             return 0;
+//         }
+        
+//         int n = A.length;
+//         boolean[][] dp = new boolean[2][m + 1];  // dp[i][j] represents whether some of the first i items can fill size j of the backpack (add up to j)
+        
+//         // initialization
+//         dp[0][0] = true;  // 0 items can fill size 0
+//         for (int i = 1; i <= m; i++) {
+//             dp[0][i] = false;  // 0 items cannot fill size i
+//         }
+//         int old = 1;
+//         int now = 0;
+        
+//         for (int i = 1; i <= n; i++) {
+//             now = old;
+//             old = 1 - now;
+//             for (int j = 0; j <= m; j++) {
+//                 if (j < A[i - 1]) {
+//                     dp[now][j] = dp[old][j];  // cannot put the current item into backpack
+//                 } else {
+//                     dp[now][j] = dp[old][j] || dp[old][j - A[i - 1]];
+//                     // either put into the backpack or not
+//                 }
+//             }
+//         }
+        
+//         for (int i = m; i >= 0; i--) {
+//             if (dp[now][i]) {
+//                 return i;
+//             }
+//         }
+        
+//         return 0;
+//     }
+// }
+
+
+// 1D array dp
 public class Solution {
     /**
      * @param m: An integer m denotes the size of a backpack
@@ -53,31 +100,22 @@ public class Solution {
         }
         
         int n = A.length;
-        boolean[][] dp = new boolean[2][m + 1];  // dp[i][j] represents whether some of the first i items can fill size j of the backpack (add up to j)
+        boolean[] dp = new boolean[m + 1];  // dp[i] represents whether size i of the backpack can be filled by some of the items we have explored so far (add up to i)
         
         // initialization
-        dp[0][0] = true;  // 0 items can fill size 0
+        dp[0] = true;  // 0 items can fill size 0
         for (int i = 1; i <= m; i++) {
-            dp[0][i] = false;  // 0 items cannot fill size i
+            dp[i] = false;  // 0 items cannot fill size i
         }
-        int old = 1;
-        int now = 0;
         
         for (int i = 1; i <= n; i++) {
-            now = old;
-            old = 1 - now;
-            for (int j = 0; j <= m; j++) {
-                if (j < A[i - 1]) {
-                    dp[now][j] = dp[old][j];  // cannot put the current item into backpack
-                } else {
-                    dp[now][j] = dp[old][j] || dp[old][j - A[i - 1]];
-                    // either put into the backpack or not
-                }
+            for (int j = m; j >= A[i - 1]; j--) {
+                dp[j] = dp[j] || dp[j - A[i - 1]];
             }
         }
         
         for (int i = m; i >= 0; i--) {
-            if (dp[now][i]) {
+            if (dp[i]) {
                 return i;
             }
         }
