@@ -33,6 +33,7 @@ public class Solution {
             }
         }
         
+        // need to traverse all the start position
         int min = Integer.MAX_VALUE;
         for (int i = 0; i < n; i++) {
             min = Math.min(min, dp[i][(i + n - 1) % n]);
@@ -83,6 +84,7 @@ public class Solution {
 //             }
 //         }
         
+//         // need to traverse all the start position
 //         int min = Integer.MAX_VALUE;
 //         for (int i = 0; i < n; i++) {
 //             min = Math.min(min, dp[i][(i + n - 1) % n]);
