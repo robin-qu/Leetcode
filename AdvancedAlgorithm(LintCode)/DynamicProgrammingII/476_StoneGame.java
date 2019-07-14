@@ -9,9 +9,6 @@ public class Solution {
         }
         
         int n = A.length;
-        if (n == 1) {
-            return A[0];
-        }
         
         int[][] dp = new int[n][n];  // dp[i][j] represents the sum (score) from number i to number j
         int[] prefixSum = new int[n + 1];  // the prefix sum of the first i numbers
@@ -19,7 +16,6 @@ public class Solution {
         for (int i = 0; i < n; i++) {
             prefixSum[i + 1] = prefixSum[i] + A[i];
         }
-        
         
         for (int len = 2; len <= n; len++) {
             for (int i = 0; i + len - 1 < n; i++) {
