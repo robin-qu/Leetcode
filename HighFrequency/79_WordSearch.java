@@ -1,4 +1,4 @@
-// DFS
+// DFS O(mn*4^len)time O(mn + len)space
 class Solution {
     private static final int[] dx = new int[]{0, 1, -1, 0};
     private static final int[] dy = new int[]{1, 0, 0, -1};
