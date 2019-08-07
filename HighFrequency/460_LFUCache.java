@@ -1,0 +1,277 @@
+// class LFUCache {
+//     class Node {
+//         public int key;
+//         public int val;
+//         public Node prev;
+//         public Node next;
+
+//         public Node(int key, int val, Node prev, Node next) {
+//             this.key = key;
+//             this.val = val;
+//             this.prev = prev;
+//             this.next = next;
+//         }
+//     }
+
+//     private Node left;
+//     private Node right;
+//     private int min;
+//     private int size;
+//     private int capacity;
+//     private Map<Integer, Node> keyToNode;
+//     private Map<Integer, Integer> keyToFreq;
+//     private Map<Integer, List<Node>> freqToNodes;
+
+//     public LFUCache(int capacity) {
+//         this.keyToNode = new HashMap<>();
+//         this.keyToFreq = new HashMap<>();
+//         this.freqToNodes = new HashMap<>();
+//         this.left = new Node(0, 0, null, null);
+//         this.right = new Node(0, 0, left, null);
+//         left.next = right;
+//         this.min = Integer.MAX_VALUE;
+//         this.size = 0;
+//         this.capacity = capacity;
+//     }
+
+//     public int get(int key) {
+//         if (!keyToNode.containsKey(key)) {
+//             return -1;
+//         }
+
+//         Node curr = keyToNode.get(key);
+//         int frequency = keyToFreq.get(key);
+
+//         // update most used element
+//         moveToEnd(curr);
+
+//         // update frequency
+//         freqToNodes.get(frequency).remove(curr);
+//         if (freqToNodes.get(frequency).size() == 0) {
+//             freqToNodes.remove(frequency);
+//             min++;
+//         }
+//         frequency++;
+//         keyToFreq.put(key, frequency);
+//         if (!freqToNodes.containsKey(frequency)) {
+//             freqToNodes.put(frequency, new ArrayList<>());
+//         }
+//         freqToNodes.get(frequency).add(curr);
+
+//         return curr.val;
+//     }
+
+//     public void put(int key, int value) {
+//         if (capacity == 0) {
+//             return;
+//         }
+
+//         // key already exists
+//         if (get(key) != -1) {
+//             keyToNode.get(key).val = value;
+//             return;
+//         }
+
+//         if (size == capacity) {
+//             // remove least frequent
+//             Node removed = freqToNodes.get(min).remove(0);
+//             // update min
+//             if (freqToNodes.get(min).size() == 0) {
+//                 freqToNodes.remove(min);
+//                 // int newMin = Integer.MAX_VALUE;
+//                 // for (int freq : freqToNodes.keySet()) {
+//                 //     newMin = Math.min(newMin, freq);
+//                 // }
+//                 // min = newMin;
+//             }
+
+//             keyToFreq.put(removed.key, keyToFreq.get(removed.key) - 1);
+//             if (keyToFreq.get(removed.key) == 0) {
+//                 keyToFreq.remove(removed.key);
+//             }
+
+//             removed.next.prev = removed.prev;
+//             removed.prev.next = removed.next;
+//             keyToNode.remove(removed.key);
+
+//             size--;
+//         }
+
+//         // add new
+//         Node curr = new Node(key, value, right.prev, right);
+//         keyToNode.put(key, curr);
+//         curr.prev.next = curr;
+//         curr.next.prev = curr;
+
+//         // if (!keyToFreq.containsKey(key)) {
+//         keyToFreq.put(key, 1);
+//         min = 1;
+//         // } else {
+//         //     keyToFreq.put(key, keyToFreq.get(key) + 1);
+//         // }
+
+//         if (!freqToNodes.containsKey(min)) {
+//             freqToNodes.put(min, new ArrayList<>());
+//         }
+//         freqToNodes.get(min).add(keyToNode.get(key));
+
+//         size++;
+//     }
+
+//     private void moveToEnd(Node curr) {
+//         curr.next.prev = curr.prev;
+//         curr.prev.next = curr.next;
+//         curr.next = right;
+//         curr.prev = right.prev;
+//         curr.prev.next = curr;
+//         curr.next.prev = curr;
+//     }
+// }
+
+// /**
+//  * Your LFUCache object will be instantiated and called as such:
+//  * LFUCache obj = new LFUCache(capacity);
+//  * int param_1 = obj.get(key);
+//  * obj.put(key,value);
+//  */
+
+
+import java.util.*;
+
+class LFUCache {
+    class Node {
+        public int key;
+        public int val;
+        public int count;
+        public Node prev;
+        public Node next;
+
+        public Node(int key, int val) {
+            this.key = key;
+            this.val = val;
+            this.count = 1;
+            this.prev = null;
+            this.next = null;
+        }
+    }
+
+    class DList {
+        public Node left;
+        public Node right;
+        public int size;
+
+        public DList() {
+            this.left = new Node(0, 0);
+            this.right = new Node(0, 0);
+            this.left.next = this.right;
+            this.right.prev = this.left;
+            this.size = 0;
+        }
+
+        public void addLast(Node curr) {
+            curr.next = right;
+            curr.prev = right.prev;
+            curr.next.prev = curr;
+            curr.prev.next = curr;
+            this.size++;
+        }
+
+        public Node removeFirst() {
+            Node res = left.next;
+            left.next = left.next.next;
+            left.next.prev = left;
+            this.size--;
+            return res;
+        }
+
+        public void remove(Node curr) {
+            curr.next.prev = curr.prev;
+            curr.prev.next = curr.next;
+            this.size--;
+        }
+
+        public int size() {
+            return this.size;
+        }
+    }
+
+    private int min;
+    private int size;
+    private int capacity;
+    private Map<Integer, Node> map;  // key -> Node
+    private Map<Integer, DList> freq; // count -> list of nodes with that count, whose leftmost element is the least recently used one, rightmost element is the most recently used one
+
+    public LFUCache(int capacity) {
+        this.min = Integer.MAX_VALUE;
+        this.size = 0;
+        this.capacity = capacity;
+        this.map = new HashMap<>();
+        this.freq = new HashMap<>();
+    }
+
+    public int get(int key) {
+        if (!map.containsKey(key)) {
+            return -1;
+        }
+
+        // key already exists in the cache
+        Node curr = map.get(key);
+        update(curr);
+
+        return curr.val;
+    }
+
+    public void put(int key, int value) {
+        // corner case
+        if (capacity == 0) {
+            return;
+        }
+
+        // key already exists, just call get(key) and change its value
+        if (get(key) != -1) {
+            map.get(key).val = value;
+            return;
+        }
+
+        // new node
+        Node curr = new Node(key, value);
+
+        if (size == capacity) {
+            Node removed = freq.get(min).removeFirst(); // remove the least recently used element out of the least frequently used ones
+            map.remove(removed.key);
+            size--;
+        }
+        
+        // with new node coming in, the minimum frequency must be 1
+        min = 1;
+        if (!freq.containsKey(curr.count)) {
+            freq.put(curr.count, new DList());
+        }
+        freq.get(curr.count).addLast(curr);
+        map.put(key, curr);
+        size++;
+    }
+
+    private void update(Node curr) {
+        DList list = freq.get(curr.count);
+        list.remove(curr);
+        if (curr.count == min && list.size() == 0) {  // the min value needs to be changed
+            min++;
+        }
+
+        curr.count++;
+        
+        // put the current node into corresponding frequency list
+        if (!freq.containsKey(curr.count)) {
+            freq.put(curr.count, new DList());
+        }
+        freq.get(curr.count).addLast(curr);
+    }
+}
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
