@@ -126,26 +126,25 @@
         
 //         if (board[row][col] != '.') {
 //             return dfs(idx + 1, board, rows, cols, blocks);
-//         } else {
-//             for (char c = '1'; c <= '9'; c++) {
-//                 if (isValid(c, idx, rows, cols, blocks)) {
-//                     board[row][col] = c;
-//                     rows[row].add(c);
-//                     cols[col].add(c);
-//                     blocks[row / 3 * 3 + col / 3].add(c);
-//                     if (dfs(idx + 1, board, rows, cols, blocks)) {
-//                         return true;
-//                     } else {
-//                         board[row][col] = '.';
-//                         rows[row].remove(c);
-//                         cols[col].remove(c);
-//                         blocks[row / 3 * 3 + col / 3].remove(c);
-//                     }
-                        
-//                 }
-//             }
-//             return false;
 //         }
+        
+//         for (char c = '1'; c <= '9'; c++) {
+//             if (isValid(c, idx, rows, cols, blocks)) {
+//                 board[row][col] = c;
+//                 rows[row].add(c);
+//                 cols[col].add(c);
+//                 blocks[row / 3 * 3 + col / 3].add(c);
+//                 if (dfs(idx + 1, board, rows, cols, blocks)) {
+//                     return true;
+//                 }
+//                 board[row][col] = '.';
+//                 rows[row].remove(c);
+//                 cols[col].remove(c);
+//                 blocks[row / 3 * 3 + col / 3].remove(c);
+//             }
+//         }
+        
+//         return false;
 //     }
     
 //     private boolean isValid(char c, int idx, Set<Character>[] rows, Set<Character>[] cols, Set<Character>[] blocks) {
@@ -177,20 +176,19 @@ class Solution {
         
         if (board[row][col] != '.') {
             return dfs(idx + 1, board);
-        } else {
-            for (char c = '1'; c <= '9'; c++) {
-                if (isValid(c, idx, board)) {
-                    board[row][col] = c;
-                    if (dfs(idx + 1, board)) {
-                        return true;
-                    } else {
-                        board[row][col] = '.';
-                    }
-                        
-                }
-            }
-            return false;
         }
+        
+        for (char c = '1'; c <= '9'; c++) {
+            if (isValid(c, idx, board)) {
+                board[row][col] = c;
+                if (dfs(idx + 1, board)) {
+                    return true;
+                }
+                board[row][col] = '.';
+            }
+        }
+
+        return false;
     }
     
     private boolean isValid(char c, int idx, char[][] board) {
@@ -261,12 +259,12 @@ class Solution {
 
 //                             if (dfs(board, rows, cols, blocks)) {
 //                                 return true;
-//                             } else {
-//                                 board[i][j] = '.';
-//                                 rows[i].remove(c);
-//                                 cols[j].remove(c);
-//                                 blocks[i / 3 * 3 + j / 3].remove(c);
 //                             }
+
+//                             board[i][j] = '.';
+//                             rows[i].remove(c);
+//                             cols[j].remove(c);
+//                             blocks[i / 3 * 3 + j / 3].remove(c);
 //                         }
 //                     }
                 
