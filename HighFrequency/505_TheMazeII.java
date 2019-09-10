@@ -1,4 +1,4 @@
-// // dfs O(4^(mn))time O(mn)space
+// // dfs O(mn*max(m, n))time O(mn)space
 // class Solution {
 //     private static final int[] dx = new int[]{0, 1, -1, 0};
 //     private static final int[] dy = new int[]{1, 0, 0, -1};
@@ -55,7 +55,7 @@
 // }
 
 
-// bfs O(4(mn))time O(mn)space
+// bfs O(mn*max(m,n))time O(mn)space
 class Solution {
     private static final int[] dx = new int[]{0, 1, -1, 0};
     private static final int[] dy = new int[]{1, 0, 0, -1};
