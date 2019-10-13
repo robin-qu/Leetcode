@@ -52,24 +52,50 @@
 // }
 
 
-// sweep without define new class line O(nlogn)time O(1)space
+// // sweep without define new class line O(nlogn)time O(1)space
+// class Solution {
+//     public boolean canAttendMeetings(int[][] intervals) {
+//         if (intervals == null || intervals.length == 0 ||
+//             intervals[0] == null || intervals[0].length != 2) {
+//             return true;
+//         }
+        
+//         int n = intervals.length;
+        
+//         Arrays.sort(intervals, new Comparator<int[]>() {
+//             public int compare(int[] a, int[] b) {
+//                 return a[0] - b[0];
+//             }
+//         });
+        
+//         for (int i = 0; i < n - 1; i++) {
+//             if (intervals[i][1] > intervals[i + 1][0]) {
+//                 return false;
+//             }
+//         }
+        
+//         return true;
+//     }
+// }
+
+// O(nlogn)time O(1)space
 class Solution {
     public boolean canAttendMeetings(int[][] intervals) {
-        if (intervals == null || intervals.length == 0 ||
-            intervals[0] == null || intervals[0].length != 2) {
+        if (intervals == null || intervals.length == 0) {
             return true;
         }
         
         int n = intervals.length;
         
         Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
             public int compare(int[] a, int[] b) {
                 return a[0] - b[0];
             }
         });
         
-        for (int i = 0; i < n - 1; i++) {
-            if (intervals[i][1] > intervals[i + 1][0]) {
+        for (int i = 1; i < n; i++) {
+            if (intervals[i][0] < intervals[i - 1][1]) {
                 return false;
             }
         }
