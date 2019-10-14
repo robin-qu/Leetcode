@@ -99,34 +99,74 @@
 
 
 
-// Bucketsort O(n)time O(n)space
-class Solution {    
+// // Bucketsort O(n)time O(n)space
+// class Solution {    
+//     public List<Integer> topKFrequent(int[] nums, int k) {
+//         if (nums == null || nums.length == 0) {
+//             return new ArrayList<>();
+//         }
+        
+//         int n = nums.length;
+//         List<Integer>[] bucket = new List[n + 1];
+//         Map<Integer, Integer> count = new HashMap<>();  // num -> frequence
+        
+//         for (int num : nums) {
+//             count.put(num, count.getOrDefault(num, 0) + 1);
+//         }
+        
+//         for (int num : count.keySet()) {
+//             int idx = count.get(num);
+//             if (bucket[idx] == null) {
+//                 bucket[idx] = new ArrayList<>();
+//             }
+            
+//             bucket[idx].add(num);
+//         }
+        
+//         List<Integer> res = new ArrayList<>();
+//         for (int i = n; i >= 0 && res.size() < k; i--) {
+//             if (bucket[i] != null) {
+//                 res.addAll(bucket[i]);
+//             }
+//         }
+        
+//         return res;
+//     }
+// }
+
+
+
+class Solution {
     public List<Integer> topKFrequent(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
         
-        int n = nums.length;
-        List<Integer>[] bucket = new List[n + 1];
-        Map<Integer, Integer> count = new HashMap<>();  // num -> frequence
-        
+        Map<Integer, Integer> counts = new HashMap<>();
         for (int num : nums) {
-            count.put(num, count.getOrDefault(num, 0) + 1);
+            counts.put(num, counts.getOrDefault(num, 0) + 1);
         }
         
-        for (int num : count.keySet()) {
-            int idx = count.get(num);
-            if (bucket[idx] == null) {
-                bucket[idx] = new ArrayList<>();
+        List<Integer>[] bucket = new List[nums.length + 1];
+        for (int key : counts.keySet()) {
+            if (bucket[counts.get(key)] == null) {
+                bucket[counts.get(key)] = new ArrayList<>();
             }
             
-            bucket[idx].add(num);
+            bucket[counts.get(key)].add(key);
         }
         
         List<Integer> res = new ArrayList<>();
-        for (int i = n; i >= 0 && res.size() < k; i--) {
-            if (bucket[i] != null) {
+        for (int i = nums.length; i >= 0; i--) {
+            if (bucket[i] == null) {
+                continue;
+            } else if (bucket[i].size() + res.size() <= k) {
                 res.addAll(bucket[i]);
+            } else {
+                int j = 0;
+                while (res.size() < k) {
+                    res.add(bucket[i].get(j++));
+                }
             }
         }
         
