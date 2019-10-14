@@ -18,7 +18,7 @@
 //             return other.word.compareTo(this.word);
 //         }
 //     }
-    
+
 //     public List<String> topKFrequent(String[] words, int k) {
 //         if (words == null || words.length == 0 || k < 1) {
 //             return new ArrayList<>();
@@ -51,44 +51,85 @@
 // }
 
 
-// heap  O(nlogk)time O(n)space
-class Solution {    
+// // heap  O(nlogk)time O(n)space
+// class Solution {
+//     public List<String> topKFrequent(String[] words, int k) {
+//         if (words == null || words.length == 0 || k < 1) {
+//             return new ArrayList<>();
+//         }
+        
+//         int n = words.length;
+//         Map<String, Integer> count = new HashMap<>(); // word -> frequency
+        
+//         for (String word : words) {
+//             count.put(word, count.getOrDefault(word, 0) + 1);
+//         }
+        
+//         PriorityQueue<String> pq = new PriorityQueue<>(new Comparator<String>() {
+//             @Override
+//             public int compare(String a, String b) {
+//                 if (count.get(a) != count.get(b)) {
+//                     return count.get(a) - count.get(b);
+//                 }
+                
+//                 return b.compareTo(a);
+//             }
+//         });
+        
+//         for (String word : count.keySet()) {
+//             pq.offer(word);
+            
+//             if (pq.size() > k) {
+//                 pq.poll();
+//             }
+//         }
+        
+//         List<String> res = new ArrayList<>();
+        
+//         while (!pq.isEmpty()) {
+//             res.add(0, pq.poll());
+//         }
+        
+//         return res;
+//     }
+// }
+
+
+class Solution {
     public List<String> topKFrequent(String[] words, int k) {
-        if (words == null || words.length == 0 || k < 1) {
+        if (words == null || words.length == 0) {
             return new ArrayList<>();
         }
         
-        int n = words.length;
-        Map<String, Integer> count = new HashMap<>(); // word -> frequency
-        
+        Map<String, Integer> counts = new HashMap<>();
         for (String word : words) {
-            count.put(word, count.getOrDefault(word, 0) + 1);
+            counts.put(word, counts.getOrDefault(word, 0) + 1);
         }
         
-        PriorityQueue<String> pq = new PriorityQueue<>(new Comparator<String>() {
+        PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>(new Comparator<Map.Entry<String, Integer>>() {
             @Override
-            public int compare(String a, String b) {
-                if (count.get(a) != count.get(b)) {
-                    return count.get(a) - count.get(b);
+            public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
+                if (a.getValue() != b.getValue()) {
+                    return a.getValue() - b.getValue();
                 }
                 
-                return b.compareTo(a);
+                return b.getKey().compareTo(a.getKey());
             }
         });
         
-        for (String word : count.keySet()) {
-            pq.offer(word);
-            
+        for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+            pq.offer(entry);
             if (pq.size() > k) {
                 pq.poll();
             }
         }
         
         List<String> res = new ArrayList<>();
-        
         while (!pq.isEmpty()) {
-            res.add(0, pq.poll());
+            res.add(pq.poll().getKey());
         }
+        
+        Collections.reverse(res);
         
         return res;
     }
