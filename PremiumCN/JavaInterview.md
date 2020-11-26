@@ -129,10 +129,70 @@ volatile禁止指令重排，必须按顺序执行
 
 将a和flag用volatile就不会出现flag = true先于a = 1执行的情况。
 
-#### 1.4.2.4 禁止指令重排原理
+#### 1.2.4.4 禁止指令重排原理
 
 ![image-20201125225547948](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201125225547948.png)
 
 ![image-20201125225919026](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201125225919026.png)
 
 ![image-20201125230220533](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201125230220533.png)
+
+### 1.2.5 volatile的应用
+
+- 单例模式双重检查锁（双重检查 + volatile）
+
+![image-20201126215809284](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126215809284.png)
+
+![image-20201126220012690](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126220012690.png)
+
+![image-20201126220114290](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126220114290.png)
+
+![image-20201126220406807](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126220406807.png)
+
+## 1.3 CAS
+
+### 1.3.1 比较并交换 (Compare And Swap)
+
+如果compareAndSet的期望值跟内存中的真实值一样，则修改为update的值并返回true，若不一样则不修改并返回false。
+
+![image-20201126221301884](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126221301884.png)
+
+![image-20201126221341639](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126221341639.png)
+
+### 1.3.2 CAS底层原理
+
+#### 1.3.2.1 atomicInteger.getAndIncrement()
+
+![image-20201126222339650](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126222339650.png)
+
+#### 1.3.2.2 Unsafe类
+
+![image-20201126222722693](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126222722693.png)
+
+![image-20201126222902437](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126222902437.png)
+
+![image-20201126223105334](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126223105334.png)
+
+![image-20201126223306298](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126223306298.png)
+
+![image-20201126223946365](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126223946365.png)
+
+![image-20201126224958262](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126224958262.png)
+
+![image-20201126225150663](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126225150663.png)
+
+![image-20201126225209043](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126225209043.png)
+
+#### 1.3.2.3 CAS缺点
+
+- 循环时间长，开销大
+
+![image-20201126225448730](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126225448730.png)
+
+如果某个线程在获取主内存之后都有别的线程修改了主内存的值，那么将一直循环直到没有别的线程修改（一直自旋）。
+
+- 只能保证一个共享变量的原子操作
+
+![image-20201126225827440](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126225827440.png)
+
+- 引出ABA问题
