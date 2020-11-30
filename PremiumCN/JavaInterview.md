@@ -196,3 +196,51 @@ volatile禁止指令重排，必须按顺序执行
 ![image-20201126225827440](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126225827440.png)
 
 - 引出ABA问题
+
+
+
+## 1.4 ABA问题
+
+### 1.4.1 原子类AtomicInteger的ABA问题的产生原因
+
+CAS --> Unsafe类 --> CAS底层思想 --> ABA问题 --> 原子引用更新 --> 如何规避ABA问题
+
+![image-20201130221853057](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130221853057.png)
+
+线程one会以为没有别的线程修改过内存中的A，从而继续对内存进行修改。实际上线程two对内存已经进行了修改，需要重新读取数据。根据业务需求判断是否需要保持初始状态和结束状态之间的状态不变，如果需要则会产生问题，如果不需要则不产生影响。
+
+### 1.4.2 如何解决ABA问题：原子引用
+
+原子引用，泛型类V为需要进行原子包装的自定义类，使类V变为原子类
+
+![image-20201130222818666](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130222818666.png)
+
+![image-20201130223050457](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130223050457.png)
+
+![image-20201130223357811](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130223357811.png)
+
+![image-20201130223508542](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130223508542.png)
+
+### 1.4.3 时间戳原子引用
+
+增加修改版本号机制（类似时间戳）
+
+T1         100(1)                                      300(2)
+
+T2         100(1)             200(2)              100(3)
+
+T1线程提交的修改的版本号旧于T2线程修改后的版本号，所以不会被更新。
+
+![image-20201130224413141](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130224413141.png)
+
+ABA问题DEMO：
+
+![image-20201130224729168](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130224729168.png)
+
+![image-20201130224812870](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130224812870.png)
+
+![image-20201130224923302](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130224923302.png)
+
+![image-20201130225745593](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130225745593.png)
+
+![image-20201130225634691](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130225634691.png)
