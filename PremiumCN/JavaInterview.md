@@ -6,6 +6,8 @@
 
 **并行**：同时执行动作。
 
+
+
 ## 1.2 Volatile
 
 ### 1.2.1 Volatile是JVM提供的一种轻量级的同步机制
@@ -149,6 +151,8 @@ volatile禁止指令重排，必须按顺序执行
 
 ![image-20201126220406807](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201126220406807.png)
 
+
+
 ## 1.3 CAS
 
 ### 1.3.1 比较并交换 (Compare And Swap)
@@ -229,7 +233,7 @@ T1         100(1)                                      300(2)
 
 T2         100(1)             200(2)              100(3)
 
-T1线程提交的修改的版本号旧于T2线程修改后的版本号，所以不会被更新。
+T1线程提交的修改的版本号旧于T2线程修改后的版本号，所以不会被更新。即除了判断前后值是否相同，还要判断前后版本号是否一致，只有版本前后相同才会被修改。
 
 ![image-20201130224413141](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130224413141.png)
 
@@ -244,3 +248,81 @@ ABA问题DEMO：
 ![image-20201130225745593](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130225745593.png)
 
 ![image-20201130225634691](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201130225634691.png)
+
+
+
+## 1.5 集合类不安全
+
+### 1.5.1 ArrayList线程不安全
+
+#### 1.5.1.1 现象
+
+![image-20201201220759193](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201220759193.png)
+
+#### 1.5.1.2 原因
+
+并发争抢修改导致，一个线程正在写入，另一个线程过来争抢锁，导致数据不一致异常：ConcurrentModificationException
+
+#### 1.5.1.3 解决
+
+- List<String> list = new Vector<>();
+- Collections.synchronizedList(new ArrayList<>());
+- new CopyOnWriteArrayList<>();
+
+#### 1.5.1.4 CopyOnWriteArrayList原理：写时复制
+
+![image-20201201223201895](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201223201895.png)
+
+![image-20201201223249165](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201223249165.png)
+
+![image-20201201223313884](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201223313884.png)
+
+### 1.5.2 HashSet线程不安全
+
+#### 1.5.2.1 现象
+
+![image-20201201223655887](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201223655887.png)
+
+#### 1.5.2. 解决
+
+- Collections.synchronizedSet(new HashSet<>());
+- new CopyOnWriteArraySet<>();
+
+#### 1.5.2.3 原理
+
+![image-20201201223852211](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201223852211.png)
+
+### 1.5.2 HashMap线程不安全
+
+#### 1.5.2.1 现象
+
+![image-20201201224259263](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201224259263.png)
+
+#### 1.5.2.2 解决
+
+- Collections.synchronizedMap(new HashMap<>());
+- new ConcurrentHashMap<>();
+
+
+
+## 1.6 锁
+
+### 1.6.1 公平锁和非公平锁
+
+![image-20201201225140470](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225140470.png)
+
+饥饿现象：线程一直被加塞，导致一直不能获得锁
+
+区别：
+
+![image-20201201225414557](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225414557.png)
+
+![image-20201201225214008](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225214008.png)
+
+![image-20201201225551075](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225551075.png)
+
+![image-20201201225607322](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225607322.png)
+
+### 1.6.2 可重入锁（又名递归锁）
+
+![image-20201201225841177](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225841177.png)
