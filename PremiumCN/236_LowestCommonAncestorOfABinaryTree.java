@@ -1,40 +1,37 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
 class Solution {
-    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        if (beginWord == null || endWord == null || wordList == null) {
-            return 0;
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
         }
 
-        Set<String> words = new HashSet<>(wordList);
-        if (!words.contains(endWord)) {
-            return 0;
+        if (root == p || root == q) {
+            return root;
         }
 
-        int res = 1;
-        Queue<String> queue = new LinkedList<>();
-        queue.offer(beginWord);
-        words.remove(beginWord);
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            res++;
-            for (int i = 0; i < size; i++) {
-                String curr = queue.poll();
-                for (int j = 0; j < curr.length(); j++) {
-                    char[] ss = curr.toCharArray();
-                    for (int k = 0; k < 26; k++) {
-                        ss[j] = (char) ('a' + k);
-                        String next = String.valueOf(ss);
-                        if (next.equals(endWord)) {
-                            return res;
-                        }
-                        if (words.contains(next)) {
-                            queue.offer(next);
-                            words.remove(next);
-                        }
-                    }
-                }
-            }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        
+        if (left != null && right != null) {
+            return root;
         }
 
-        return 0;
+        if (left != null) {
+            return left;
+        }
+
+        if (right != null) {
+            return right;
+        }
+
+        return null;
     }
 }
