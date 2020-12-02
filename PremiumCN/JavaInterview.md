@@ -325,4 +325,71 @@ ABA问题DEMO：
 
 ### 1.6.2 可重入锁（又名递归锁）
 
-![image-20201201225841177](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225841177.png)
+#### 1.6.2.1 是什么
+
+![image-20201201225841177](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225841177.png)ReentrantLock和synchronized是两个典型的可重入锁
+
+可重入锁的最大作用是避免死锁
+
+#### 1.6.2.2 DEMO
+
+![image-20201202214026425](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202214026425.png)
+
+![image-20201202214130499](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202214130499.png)
+
+![image-20201202214142471](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202214142471.png)
+
+同步方法可以进入另外一个同步方法
+
+12线程在在外层方法（sendSMS）获取锁的时候，在进入内层方法（sendEmail）会自动获取锁
+
+![image-20201202214833863](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202214833863.png)
+
+![image-20201202214914140](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202214914140.png)
+
+![image-20201202215051624](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202215051624.png)
+
+![image-20201202215147551](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202215147551.png)
+
+BTW：可以锁多次，只要能配对
+
+![image-20201202215342494](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202215342494.png)
+
+### 1.6.3 自旋锁
+
+![image-20201202220228789](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202220228789.png)
+
+手写一个自旋锁：
+
+![image-20201202221656054](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202221656054.png)    
+
+![image-20201202221716220](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202221716220.png)
+
+![image-20201202221739054](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202221739054.png)
+
+### 1.6.4 独占锁（写锁）/共享锁（读锁）/互斥锁
+
+![image-20201202223152394](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202223152394.png)
+
+读写锁：读的时候多个线程可以同时读，写的时候只有一个线程能写。Lock和synchronized读和写都只能一个线程操作。数据一致性可以保证但是并发量会下降。为增加并发量，可以允许多个线程同时读数据。
+
+![image-20201202223644134](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202223644134.png)
+
+写操作：原子 + 独占，整个过程为完整的中间不能被分割打断
+
+DEMO:
+
+![image-20201202225751183](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202225751183.png)
+
+![image-20201202225810885](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202225810885.png)
+
+Result:
+
+![image-20201202225941354](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202225941354.png)
+
+读写分离：写操作被严格控制，中间没有加塞。既保证了一致性又提高了并发性。读没有严格的控制顺序，属于共享操作。
+
+不加锁 VS 加读写锁
+
+![image-20201202230147349](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202230147349.png)
+
