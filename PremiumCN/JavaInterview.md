@@ -393,3 +393,89 @@ Result:
 
 ![image-20201202230147349](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202230147349.png)
 
+
+
+## 1.7 JUC工具
+
+### 1.7.1 CountDownLatch
+
+![image-20201203214705671](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203214705671.png)
+
+![image-20201203215224921](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203215224921.png)
+
+![image-20201203215303993](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203215303993.png)
+
+让线程阻塞直到CountDownLatch减少到零时才继续进行。当线程调用await时该线程在计数结束之前会被阻塞。其他线程调用countDown时将计数减少1，调用countDown方法的线程不会被阻塞。当计数器减为零的时候，调用await的方法被唤醒并继续执行。
+
+### 1.7.2 CyclicBarrier
+
+让一组线程到达一个屏障（同步点）时被阻塞，直到最后一个线程到达屏障时屏障才会放开，所有被屏障拦截的线程才会继续执行，线程通过await方法进入屏障。
+
+![image-20201203220948229](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203220948229.png)
+
+![image-20201203221200279](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203221200279.png)
+
+![image-20201203221217539](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203221217539.png)
+
+### 1.7.3 Semaphore
+
+信号量主要用于两个目的，一个是用于多个共享资源的互斥使用（6辆车抢3个车位），另一个是用于并发线程数的控制。
+
+![image-20201203221958392](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203221958392.png)
+
+![image-20201203222442098](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203222442098.png)
+
+![image-20201203222505490](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203222505490.png)
+
+semaphore的值是伸缩的，最后车都走完了之后又变成了6
+
+
+
+## 1.7 阻塞队列
+
+### 1.7.1 阻塞队列
+
+![image-20201203223155829](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203223155829.png)
+
+Thread1为生产线程，Thread2为消费线程
+
+![image-20201203223419377](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203223419377.png)
+
+### 1.7.2 好处
+
+![image-20201203223600768](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203223600768.png)
+
+### 1.7.3 BlockingQueue架构
+
+![image-20201203224409005](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203224409005.png)
+
+![image-20201203224149850](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203224149850.png)
+
+### 1.7.3 API
+
+#### 1.7.3.1 BlockingQueue
+
+![image-20201203224554157](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203224554157.png)
+
+![image-20201203225129362](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203225129362.png)
+
+ #### 1.7.3.2 SynchronousQueue
+
+![image-20201203225551833](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203225551833.png)
+
+![image-20201203225918707](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203225918707.png)
+
+![image-20201203225826144](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203225826144.png)
+
+![image-20201203230105897](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203230105897.png)
+
+### 1.7.4 应用
+
+#### 1.7.4.1 生产者消费者模式
+
+![image-20201203230325284](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203230325284.png)
+
+#### 1.7.4.2 线程池
+
+#### 1.7.4.1 消息中间件
+
