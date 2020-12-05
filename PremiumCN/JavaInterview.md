@@ -475,7 +475,113 @@ Thread1为生产线程，Thread2为消费线程
 
 ![image-20201203230325284](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203230325284.png)
 
-#### 1.7.4.2 线程池
+![image-20201204192904879](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204192904879.png)
 
-#### 1.7.4.1 消息中间件
+资源类自身高内聚，包含需要被操作的方法（空调的遥控，人为线程）
+
+![image-20201204192742905](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204192742905.png)
+
+![image-20201204192804273](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204192804273.png)
+
+
+
+![image-20201204193055196](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204193055196.png)
+
+![image-20201204193117017](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204193117017.png)
+
+![image-20201204193132195](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204193132195.png)
+
+![image-20201204193224927](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204193224927.png)
+
+虚假唤醒：
+
+![image-20201204193333983](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204193333983.png)
+
+多线程判断要放在循环里面，用while不能用if，即被唤醒后要重新进行一次判断。
+
+如果有两个线程生产两个线程消费：
+
+![image-20201204193531452](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204193531452.png)
+
+#### 1.7.4.2 Synchronized和Lock的区别：
+
+- 原始构成：
+
+  Synchronized是Java关键字，属于JVM层面，通过monitorenter和monitorexit实现。底层通过monitor对象来实现，wait和notify也依赖于monitor对象，只有在同步代码块和同步方法中才可以调用wait和notify等方法
+
+  Lock是具体类(java.util.concurrent.locks.lock)，属于API层面。
+
+- 使用方法：
+
+  Synchronized不需要手动释放锁，当同步的代码执行完毕后系统会自动释放线程占用的锁
+
+  Lock需要手动释放锁，若没有主动释放有可能导致死锁（lock()和unlock()需要配合try catch finally使用）。
+
+- 是否可中断：
+
+  Synchronized不可以中断，除非正常运行完整或抛出异常
+
+  Lock可以中断，可以设置超时方法tryLock(long timeout, TimeUnit timeunit)，也可以将lockInterruptibly()放在代码块中调用interrupt()方法进行中断
+
+- 加锁是否公平：
+
+  Synchronized公平锁
+
+  Lock默认非公平锁，构造器可以指定是否公平（true公平，false不公平）
+
+- 锁绑定多个condition
+
+  synchronized没有condition
+
+  Lock用来实现分组唤醒需要唤醒的线程，可以精确唤醒，而不是像synchronized一样要么唤醒一个要么全部唤醒，例子：
+
+![image-20201204201103999](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201103999.png)
+
+![image-20201204201511115](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201511115.png)
+
+![image-20201204201744613](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201744613.png)
+
+![image-20201204201450231](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201450231.png)
+
+![image-20201204201615249](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201615249.png)
+
+![image-20201204201653408](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201653408.png)
+
+![image-20201204201903852](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201903852.png)
+
+![image-20201204201926265](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201926265.png)
+
+阻塞队列生产者消费者：
+
+多线程环境下不要用i++或++i，用AtomicInteger
+
+![image-20201204202914004](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204202914004.png)
+
+![image-20201204203219025](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204203219025.png)
+
+![image-20201204203501596](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204203501596.png)
+
+![image-20201204203850625](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204203850625.png)
+
+![image-20201204203628915](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204203628915.png)
+
+![image-20201204203641722](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204203641722.png)
+
+![image-20201204204552702](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204204552702.png)![image-20201204203955126](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204203955126.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### 1.7.4.3 线程池
+
+#### 1.7.4.4 消息中间件
 
