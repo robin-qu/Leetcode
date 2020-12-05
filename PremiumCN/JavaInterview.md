@@ -469,7 +469,7 @@ Thread1为生产线程，Thread2为消费线程
 
 ![image-20201203230105897](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201203230105897.png)
 
-### 1.7.4 应用
+### 1.7.4 应用：生产者消费者、线程池、消息中间件
 
 #### 1.7.4.1 生产者消费者模式
 
@@ -479,11 +479,11 @@ Thread1为生产线程，Thread2为消费线程
 
 资源类自身高内聚，包含需要被操作的方法（空调的遥控，人为线程）
 
+![image-20201205151358281](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205151358281.png)
+
 ![image-20201204192742905](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204192742905.png)
 
 ![image-20201204192804273](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204192804273.png)
-
-
 
 ![image-20201204193055196](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204193055196.png)
 
@@ -525,7 +525,7 @@ Thread1为生产线程，Thread2为消费线程
 
 - 加锁是否公平：
 
-  Synchronized公平锁
+  Synchronized非公平锁
 
   Lock默认非公平锁，构造器可以指定是否公平（true公平，false不公平）
 
@@ -551,7 +551,7 @@ Thread1为生产线程，Thread2为消费线程
 
 ![image-20201204201926265](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201204201926265.png)
 
-阻塞队列生产者消费者：
+#### 1.7.4.4 阻塞队列生产者消费者：
 
 多线程环境下不要用i++或++i，用AtomicInteger
 
@@ -571,17 +571,134 @@ Thread1为生产线程，Thread2为消费线程
 
 
 
+## 1.8 线程池
 
+### 1.8.1 Callable:
 
+motivation：一百个线程其中两个出错，返回出错的线程 --> 返回值。
 
+#### 1.8.1.1 与runnable区别：
 
+- callable有返回值
+- callable带泛型，泛型为返回值的类型
+- 实现call()方法
+- call()方法抛异常
 
+#### 1.8.1.2 使用：
 
+![image-20201205153823443](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205153823443.png)
 
+![image-20201205153838403](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205153838403.png)
 
+![image-20201205153850721](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205153850721.png)
 
+futureTask.get()：获得Callable接口的计算结果，如果没有计算完成就调用，会导致线程阻塞，直到计算完成，所以get()一般尽量晚的调用。
 
-#### 1.7.4.3 线程池
+![image-20201205155322149](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205155322149.png)
 
-#### 1.7.4.4 消息中间件
+![image-20201205155333566](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205155333566.png)
+
+![image-20201205155417437](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205155417437.png)
+
+![image-20201205155435834](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205155435834.png)
+
+多个线程抢一个futureTask计算结果只算一次，要多算就要起多个futureTask。
+
+### 1.8.2 为什么用线程池
+
+![image-20201205162035531](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205162035531.png)
+
+### 1.8.3 架构说明
+
+Java中的线程池是通过Executor框架实现的，该框架中用到了Executor，Executors，ExecutorService和ThreadPoolExecutor几个类。
+
+![image-20201205162615806](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205162615806.png)
+
+![image-20201205162631525](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205162631525.png)
+
+有五种线程池：
+
+#### 1.8.3.1 Executors.newScheduledThreadPool()：
+
+线程池中线程每隔一段时间执行
+
+#### 1.8.3.2 Executors.newWorkStealingPool(int)：
+
+Java8新增，使用目前机器上可用的处理器作为并行级别
+
+#### 1.8.3.3 Executors.newFixedThreadPool(int)：
+
+使用场景：
+
+执行长期的任务，性能好很多，任务可以轮替
+
+使用：
+
+![image-20201205163857695](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205163857695.png)
+
+![image-20201205163916702](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205163916702.png)
+
+![image-20201205164434299](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205164434299.png)
+
+#### 1.3.8.4 Executors.newSingleThreadExecutor()：
+
+使用场景：
+
+一个任务一个任务执行的场景
+
+使用：
+
+![image-20201205163951469](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205163951469.png)
+
+![image-20201205164017181](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205164017181.png)
+
+![image-20201205164529683](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205164529683.png)
+
+#### 1.3.8.5 Executors.newCachedThreadPool(int)：
+
+使用场景：
+
+执行很多短期异步的小程序或者负载较轻的服务器（方便扩容）。
+
+使用：
+
+![image-20201205164113174](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205164113174.png)
+
+![image-20201205164218926](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205164218926.png)
+
+![image-20201205164233220](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205164233220.png)
+
+![image-20201205164246342](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205164246342.png)
+
+![image-20201205164544848](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205164544848.png)
+
+### 1.8.4 线程池的参数：
+
+![image-20201205165657142](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205165657142.png)
+
+#### 1.8.4.1 corePoolSize：线程池中的常驻核心线程数
+
+![image-20201205170644110](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205170644110.png)
+
+![image-20201205170743665](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205170743665.png)
+
+#### 1.8.4.2 maximumPoolSize：线程池能够容纳的同时执行的最大线程数，必须大于等于1
+
+![image-20201205171028723](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205171028723.png)
+
+![image-20201205172402518](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205172402518.png)
+
+#### 1.8.4.3 keepAliveTime：多余的空闲线程的存活时间
+
+当前线程池中线程数量超过corePoolSize时，当空闲时间达到keepAliveTime时，多余的空闲线程会被销毁直至剩下coorPoolSize个线程为止。
+
+#### 1.8.4.4 unit：keepAliveTime的单位
+
+#### 1.8.4.5 workQueue：任务队列，被提交但尚未被执行的任务
+
+![image-20201205171702328](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201205171702328.png)
+
+#### 1.8.4.6 threadFactory：生成线程池中工作线程的线程工厂，用于创建线程，一般用默认的即可
+
+#### 1.8.4.7 handler：拒绝策略，表示当队列满了且工作线程数大于线程池的最大线程数（maximumPoolSize）时执行
 
