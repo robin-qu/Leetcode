@@ -702,3 +702,137 @@ Java8新增，使用目前机器上可用的处理器作为并行级别
 
 #### 1.8.4.7 handler：拒绝策略，表示当队列满了且工作线程数大于线程池的最大线程数（maximumPoolSize）时执行
 
+### 1.8.5 线程池工作原理
+
+![image-20201206152856036](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206152856036.png)
+
+![image-20201206152913676](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206152913676.png)
+
+### 1.8.6 拒绝策略
+
+阻塞队列已经排满了，而且线程池中的max线程数也达到了，无法为新任务服务，此时要使用拒绝策略机制处理后续的请求。JDK内置四种拒绝策略，均实现了RejectedExecutionHandler：
+
+#### 1.8.6.1 AbortPolicy（默认)
+
+直接抛出RejectedExecutionException阻止系统正常运行
+
+#### 1.8.6.2 CallerRunsPolicy
+
+“调用者运行”，一种调节机制，既不会抛弃任务也不会抛出异常，而是将某些任务回退到调用者，从而降低新任务的流量。
+
+#### 1.8.6.3 DiscardOldestPolicy
+
+抛弃队列中等待最久的任务，然后把当前任务加入到队列中尝试再次提交当前任务。
+
+#### 1.8.6.4 DiscardPolicy
+
+直接丢弃任务，既不处理任务也不抛出异常，如果允许任务丢失这是最好的一种方案。
+
+### 1.8.7 实际使用：
+
+#### 1.8.7.1 使用哪种线程池：自己创建线程池。
+
+![image-20201206154651915](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206154651915.png)
+
+![image-20201206154942002](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206154942002.png)
+
+![image-20201206155111376](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206155111376.png)
+
+LinkedBlockingQueue：无界（Integer.MAX_VALUE）队列，导致请求堆积。 
+
+#### 1.8.7.2 自定义线程池：
+
+以下图为例：
+
+![image-20201206155713284](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206155713284.png)
+
+![image-20201206155928051](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206155928051.png)
+
+![image-20201206160109206](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160109206.png)
+
+![image-20201206160124258](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160124258.png)
+
+![image-20201206160221558](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160221558.png)
+
+![image-20201206160234630](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160234630.png)
+
+![image-20201206160301937](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160301937.png)
+
+![image-20201206160316195](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160316195.png)
+
+3 + 5 = 8
+
+CallerRunsPolicy拒绝策略：
+
+![image-20201206160514791](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160514791.png)
+
+![image-20201206160526924](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160526924.png)
+
+![image-20201206160650732](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160650732.png)
+
+回退到调用者（main线程），谁调的回退给谁。
+
+DiscardOldestPolicy策略：
+
+![image-20201206160848804](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160848804.png)
+
+![image-20201206160936810](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206160936810.png)
+
+抛弃了两个
+
+DiscardPolicy策略：
+
+![image-20201206161030849](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206161030849.png)
+
+![image-20201206161040765](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206161040765.png)
+
+#### 1.8.7.3 如何配置线程池参数：
+
+CPU密集型：
+
+比如while循环，CPU一直在计算
+
+![image-20201206161444441](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206161444441.png)
+
+IO密集型：
+
+比如需要频繁去数据库取数据
+
+![image-20201206161641210](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206161641210.png)
+
+![image-20201206161851414](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206161851414.png)
+
+
+
+## 1.9 死锁
+
+产生死锁的原因：
+
+- 系统资源不足
+- 进程运行推进的顺序不合适
+- 资源分配不当
+
+![image-20201206162950519](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206162950519.png)
+
+DEMO:
+
+![image-20201206163542133](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206163542133.png)
+
+![image-20201206163558897](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206163558897.png)
+
+![image-20201206163636384](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206163636384.png)
+
+![image-20201206163653161](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206163653161.png)
+
+定位：
+
+- ps命令定位进程号
+- jstack找到死锁查看
+
+![image-20201206164038032](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206164038032.png)
+
+![image-20201206164417999](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206164417999.png)
+
+![image-20201206164534926](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206164534926.png)
+
+![image-20201206164733462](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206164733462.png)
