@@ -836,3 +836,8 @@ DEMO:
 ![image-20201206164534926](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206164534926.png)
 
 ![image-20201206164733462](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206164733462.png)
+
+
+
+# 2 JVM + GC
+
