@@ -839,5 +839,76 @@ DEMO:
 
 
 
-# 2 JVM + GC
+# 2 JVM初级
 
+## 2.1 JVM体系结构
+
+JVM是运行在操作系统之上的，跟硬件没有直接的交互。
+
+![image-20201207220621519](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207220621519.png)
+
+## 2.2 类加载器
+
+![image-20201207220812369](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207220812369.png)
+
+方法区放类的描述信息，可以理解为放模板的地方。将Car Class装载进方法区。
+
+### 2.2.1 分类
+
+![image-20201207221625868](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207221625868.png)
+
+自己定义的class用引用程序类加载器。系统自带的用Bootstrap加载器。
+
+![image-20201207222104036](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207222104036.png)
+
+![image-20201207222552235](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207222552235.png)
+
+![image-20201207222654298](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207222654298.png)
+
+### 2.2.2 双亲委派与沙箱安全
+
+自己定义的类不能污染系统自带的类，从Bootstrap往下加载，最先找到的就加载。
+
+![image-20201207223547276](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207223547276.png)
+
+![image-20201207223216348](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207223216348.png)
+
+## 2.3 Execution Engine
+
+执行引擎：负责解释命令，提交操作系统执行。
+
+## 2.4 Native Interface
+
+![image-20201207225501990](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207225501990.png)
+
+## 2.5 Native Method Stack
+
+![image-20201207230038267](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207230038267.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 3 JVM + GC
+
+## 3.1 Warmup
+
+### 3.1.1 JVM体系结构
+
+![image-20201207215038056](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207215038056.png)
