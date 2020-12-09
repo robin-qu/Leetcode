@@ -845,6 +845,12 @@ DEMO:
 
 JVM是运行在操作系统之上的，跟硬件没有直接的交互。
 
+灰色线程私有，内存占的非常少，几乎不存在垃圾回收。
+
+亮色所有线程共享，存在垃圾回收。
+
+栈管运行、堆管存储。
+
 ![image-20201207220621519](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207220621519.png)
 
 ## 2.2 类加载器
@@ -857,7 +863,7 @@ JVM是运行在操作系统之上的，跟硬件没有直接的交互。
 
 ![image-20201207221625868](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207221625868.png)
 
-自己定义的class用引用程序类加载器。系统自带的用Bootstrap加载器。
+自己定义的class用引用程序类加载器。系统自带的用Bootstrap加载器。自定义的类用AppClassLoader。
 
 ![image-20201207222104036](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207222104036.png)
 
@@ -867,9 +873,9 @@ JVM是运行在操作系统之上的，跟硬件没有直接的交互。
 
 ### 2.2.2 双亲委派与沙箱安全
 
-自己定义的类不能污染系统自带的类，从Bootstrap往下加载，最先找到的就加载。
+从Bootstrap往下加载，最先找到的就加载，自己定义的类不能污染系统自带的类（沙箱安全)。
 
-![image-20201207223547276](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207223547276.png)
+![image-20201208220832408](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208220832408.png)
 
 ![image-20201207223216348](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207223216348.png)
 
@@ -884,6 +890,60 @@ JVM是运行在操作系统之上的，跟硬件没有直接的交互。
 ## 2.5 Native Method Stack
 
 ![image-20201207230038267](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207230038267.png)
+
+## 2.6 程序计数器
+
+通俗来讲就是一个指针，记录了方法之间的调用和执行情况，指向下一条要执行的指令。
+
+![image-20201208215614613](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208215614613.png)
+
+## 2.7 方法区
+
+![image-20201208221053194](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208221053194.png)
+
+存放类的模板
+
+![image-20201208221743025](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208221743025.png)
+
+方法区是一套规范，类比于接口：
+
+![image-20201208222124446](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208222124446.png)
+
+## 2.8 栈
+
+![image-20201208222839026](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208222839026.png)
+
+![image-20201208223107642](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208223107642.png)
+
+栈帧可以理解为Java方法，Java方法被扔进虚拟机后就成了栈帧。栈帧中的数据也跟随方法压栈。
+
+理解：Debug的时候能看到每个方法里的变量。
+
+![image-20201208223834883](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208223834883.png)
+
+![image-20201208223920298](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208223920298.png)
+
+每个stack frame可以当作是一个方法被调用。
+
+StackOverflow：
+
+![image-20201208224220178](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208224220178.png)
+
+![image-20201208224451072](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208224451072.png)
+
+![image-20201208224650051](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208224650051.png)
+
+类元数据：即为类的结构信息
+
+## 2.9 堆
+
+![image-20201208230311916](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208230311916.png)
+
+![image-20201208230550542](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208230550542.png)
+
+
+
+
 
 
 
