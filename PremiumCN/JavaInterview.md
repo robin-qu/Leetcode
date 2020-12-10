@@ -941,6 +941,76 @@ StackOverflow：
 
 ![image-20201208230550542](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201208230550542.png)
 
+物理上分为新生区和养老区，只有新生区和养老区干活。
+
+![image-20201209215647971](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209215647971.png)
+
+Survivor0（S0）区又叫from区，Survivor1（S1）区又叫to区。
+
+![image-20201209220439019](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209220439019.png)
+
+新生区内存分配8：1：1，S0和S1区永远相等。
+
+from和to区名分和位置不是固定的，每次GC后都会交换，谁空谁是to。
+
+![image-20201209221743081](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209221743081.png)
+
+临时对象：用完即被回收，一直存在于Eden中。
+
+![image-20201209222035492](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209222035492.png)
+
+即方法区是一个规范，有不同的实现永久代（Java7）和原空间（Java8）。
+
+![image-20201209222712045](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209222712045.png)
+
+元数据：可以理解为jar包（比如rt.jar，Spring的jar包，jdbc的驱动jar包）
+
+## 2.10 堆参数调优
+
+Java7：
+
+![image-20201209223256850](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209223256850.png)
+
+新生代参数Xmn一般不调。
+
+Java8：
+
+![image-20201209223552849](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209223552849.png)
+
+![image-20201209223925283](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209223925283.png)
+
+jvm一般用物理内存的四分之一。
+
+![image-20201209224806508](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209224806508.png)
+
+生产环境中Xms和Xmx必须一样大，防止GC和应用程序争抢内存（内存值忽高忽低，产生异常）。
+
+![image-20201209225349407](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225349407.png)
+
+![image-20201209225632710](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225632710.png)
+
+![image-20201209225727425](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225727425.png)
+
+
+
+![image-20201209225703482](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225703482.png)
+
+OOM：DEMO
+
+![image-20201209225841152](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225841152.png)
+
+![image-20201209225929056](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225929056.png)
+
+![image-20201209225948534](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225948534.png)
+
+![image-20201209230133186](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209230133186.png)
+
+![image-20201209230201767](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209230201767.png)
+
+老年代full GC之后依然空间不足，则OOM。
+
+
+
 
 
 
@@ -972,3 +1042,4 @@ StackOverflow：
 ### 3.1.1 JVM体系结构
 
 ![image-20201207215038056](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207215038056.png)
+
