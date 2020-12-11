@@ -943,6 +943,8 @@ StackOverflow：
 
 物理上分为新生区和养老区，只有新生区和养老区干活。
 
+## 2.10 垃圾回收
+
 ![image-20201209215647971](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209215647971.png)
 
 Survivor0（S0）区又叫from区，Survivor1（S1）区又叫to区。
@@ -965,7 +967,7 @@ from和to区名分和位置不是固定的，每次GC后都会交换，谁空谁
 
 元数据：可以理解为jar包（比如rt.jar，Spring的jar包，jdbc的驱动jar包）
 
-## 2.10 堆参数调优
+## 2.11 堆参数调优
 
 Java7：
 
@@ -991,7 +993,7 @@ jvm一般用物理内存的四分之一。
 
 ![image-20201209225727425](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225727425.png)
 
-
+## 2.12 GC日志分析
 
 ![image-20201209225703482](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225703482.png)
 
@@ -1008,6 +1010,154 @@ OOM：DEMO
 ![image-20201209230201767](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209230201767.png)
 
 老年代full GC之后依然空间不足，则OOM。
+
+![image-20201210215525639](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210215525639.png)
+
+Allocation failure：分配失败
+
+2048：GC之前新生代用了多少
+
+488：GC之后新生代用了多少
+
+![image-20201210215707488](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210215707488.png)
+
+![image-20201210220509188](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210220509188.png)
+
+![image-20201210220427939](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210220427939.png)
+
+## 2.13 GC算法
+
+GC是什么：分代收集算法
+
+- 次数上频繁收集新生代
+- 次数上较少收集老年代
+- 基本不动元空间
+
+![image-20201210221110575](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210221110575.png)
+
+![image-20201210221156667](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210221156667.png)
+
+### 2.13.1 引用计数法
+
+![image-20201210221821173](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210221821173.png)
+
+一个对象有一个引用就加一，少一个引用就减一，直到为零时（没有被引用）被回收。用的很少。
+
+循环引用DEMO:
+
+![image-20201210222207933](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210222207933.png)
+
+![image-20201210222220116](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210222220116.png)
+
+System.gc()：手动触发GC，但不是立刻触发，实际开发中一般不要用，使用系统默认的GC即可。
+
+### 2.13.2 复制算法（Copying）
+
+年轻代中使用的是minorGC，这种GC算法采用的是复制算法。MinorGC的复制交换过程。
+
+![image-20201210223600863](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210223600863.png)
+
+![image-20201210223754757](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210223754757.png)
+
+![image-20201210224103247](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210224103247.png)
+
+复制时费空间
+
+![image-20201210224206932](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210224206932.png)
+
+![image-20201210224410745](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210224410745.png)
+
+![image-20201210224426201](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210224426201.png)
+
+![image-20201210224726449](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210224726449.png)
+
+### 2.13.3 标记清除（Mark-Sweep）
+
+一般用在老年代，老年代一般是由标记清除或者是由标记清除和标记压缩的混和实现。
+
+![image-20201210225201889](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210225201889.png)
+
+![image-20201210225409700](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210225409700.png)
+
+一次标记，一次清除。把垃圾收走剩下的内存有碎片（内存不连续)。
+
+![image-20201210225620140](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210225620140.png)
+
+### 2.13.4 标记压缩（Mark-Compact）
+
+标记 -> 清除 -> 压缩
+
+![image-20201210225903419](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210225903419.png)
+
+理论上效果最好，但耗时也最长。
+
+![image-20201210230047036](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210230047036.png)
+
+![image-20201210230116964](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210230116964.png)
+
+### 2.13.4 总结：
+
+新生代用复制，老年代用标记清除压缩（分代收集）。
+
+![image-20201210230403233](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210230403233.png)
+
+![image-20201210230506474](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210230506474.png)
+
+![image-20201210230642295](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210230642295.png)
+
+![image-20201210230657957](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210230657957.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
