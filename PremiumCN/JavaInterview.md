@@ -985,7 +985,7 @@ jvm一般用物理内存的四分之一。
 
 ![image-20201209224806508](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209224806508.png)
 
-生产环境中Xms和Xmx必须一样大，防止GC和应用程序争抢内存（内存值忽高忽低，产生异常）。
+生产环境中Xms和Xmx必须一样大，防止GC频繁收集和应用程序争抢内存（内存值忽高忽低，产生异常）。
 
 ![image-20201209225349407](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201209225349407.png)
 
@@ -1107,72 +1107,148 @@ System.gc()：手动触发GC，但不是立刻触发，实际开发中一般不�
 
 ![image-20201210230657957](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201210230657957.png)
 
+# 3 JVM高级
 
+## 3.1 GCRoot的理解
 
+### 3.1.1 垃圾回收时如何确定垃圾
 
+内存中不再使用的空间就是垃圾。
 
+#### 3.1.1.1 引用计数法：
 
+![image-20201211192655247](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211192655247.png)
 
+#### 3.1.1.2 枚举根节点做可达性分析（根搜索路径）：
 
+![image-20201211192850227](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211192850227.png)
 
+![image-20201211193059477](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211193059477.png)
 
+### 3.1.2 GC Root：
 
+- 虚拟机栈（栈帧中的局部变量区，也叫局部变量表）中引用的对象。
 
+![image-20201211193933698](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211193933698.png)
 
+m1方法在栈里，t1方法里的一个局部变量，即为虚拟机栈中引用的对象。
 
+- 方法区中类静态属性引用的对象。即上图中的t2。
 
+- 方法区中常量引用的对象。即上图中的t3。
+- 本地方法栈中JNI（Native方法）引用的对象。
 
+### 3.2 如何查看JVM系统默认值
 
+### 3.2.1 JVM参数类型：
 
+#### 3.2.1.1标配参数：
 
+- -version
+- -help
+- java -showversion
 
+#### 3.2.1.2 X参数（了解）：
 
+- -Xint：解释执行（interpreted）
+- -Xcomp：第一次使用就编译成本地代码（compiled）
+- -Xmixed：混合模式
 
+#### 3.2.1.3 XX参数：主要使用jps和jinfo两个命令
 
+- Boolean类型：-XX:+ 或者 -某个属性值 +表示开启 -表示关闭
+  - 是否打印GC收集细节：-XX:(-/+)PrintGCDetails
+  - 是否使用串行垃圾回收器：-XX:(-/+)UseSerialGC
 
+![image-20201211195949386](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211195949386.png)
 
+![image-20201211195852985](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211195852985.png)
 
+PrintGCDetails参数关闭
 
+![image-20201211200019727](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211200019727.png)
 
+![image-20201211200057733](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211200057733.png)
 
+PrintGCDetails参数开启。
 
+jinfo -flag 配置项 进程编号：查看某一进程某一个属性是否开启或数值
 
+- KV设值类型：-XX:属性key=属性值value
+  - -XX:MetaSpaceSize=128m
+  - -XX:MaxTenuringThreshold=15
 
+![image-20201211200900597](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211200900597.png)
 
+![image-20201211201001798](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211201001798.png)
 
+![image-20201211201021439](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211201021439.png)
 
+jinfo flags 进程号：显示全部参数
 
+![image-20201211201357524](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211201357524.png)
 
+Command Line为自定义配置的值
 
+简写：
 
+-Xms：等价于-XX:InitialHeapSize
 
+-Xmx：等价于-XX:MaxHeapSize
 
+### 3.2.2 查看JVM参数默认值：
 
+#### 3.2.2.1 -XX:+PrintFlagsInitial：查看初始默认值
 
+java -XX:+PrintFlagsInitial
 
+![image-20201211202118880](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211202118880.png)
 
+#### 3.2.2.1 -XX:+PrintFlagsFinal：查看修改后更新值
 
+java -XX:+PrintFlagsFinal
 
+![image-20201211202327005](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211202327005.png)
 
+纯等号为没有被修改过的
 
+冒号等号为被修改过的值
 
+![image-20201211202411605](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211202411605.png)
 
+![image-20201211202930673](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211202930673.png)
 
+![image-20201211202847490](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211202847490.png)
 
+T为运行Java类的名字
 
+-XX:+PrintCommandLineFlags：打印命令行参数
 
+![image-20201211203120231](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211203120231.png)
 
+偏重于查看默认的垃圾回收器
 
+## 3.3 JVM常用基本参数
 
+### 3.3.1 -Xms：初始内存大小
 
+默认为物理内存的1/64，等价于 -XX:InitialHeapSize
 
+### 3.3.2 -Xmx：最大内存大小
 
+默认为物理内存的1/4，等价于-XX:MaxHeapSize
 
+### 3.3.3 -Xss：设置单个线程栈的大小
 
+依赖于平台，一般默认为512k~1024k，等价于-XX:ThreadStackSize
 
+![image-20201211204151102](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211204151102.png)
 
+0代表使用默认出厂值
 
+![image-20201211204340677](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211204340677.png)
 
+![image-20201211204356804](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211204356804.png)
 
 
 
@@ -1185,11 +1261,16 @@ System.gc()：手动触发GC，但不是立刻触发，实际开发中一般不�
 
 
 
-# 3 JVM + GC
 
-## 3.1 Warmup
 
-### 3.1.1 JVM体系结构
 
-![image-20201207215038056](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201207215038056.png)
+
+
+
+
+
+
+
+
+
 
