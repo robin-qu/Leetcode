@@ -1190,12 +1190,6 @@ jinfo flags 进程号：显示全部参数
 
 Command Line为自定义配置的值
 
-简写：
-
--Xms：等价于-XX:InitialHeapSize
-
--Xmx：等价于-XX:MaxHeapSize
-
 ### 3.2.2 查看JVM参数默认值：
 
 #### 3.2.2.1 -XX:+PrintFlagsInitial：查看初始默认值
@@ -1250,27 +1244,127 @@ T为运行Java类的名字
 
 ![image-20201211204356804](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201211204356804.png)
 
+### 3.3.4 -Xmn 设置年轻代大小
 
+即年轻代和老年代的比例，默认为（1：2），一般使用默认值
 
+### 3.3.5 -XX:MetaspaceSize 设置元空间大小
 
+元空间的本质和永久代类似，都是对JVM规范中方法区的实现。元空间和永久代之间最主要的区别是元空间不在虚拟机中，而是直接使用本地物理内存，永久代则是在堆里。因此，默认情况下，元空间的大小仅收到本地内存限制。
 
+![image-20201212151754584](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212151754584.png)
 
+元空间默认使用20M左右。为防止OOM:Metaspace错误，可以将元空间的值调大。
 
+常用参数典型配置案例：
 
+![image-20201212152246320](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212152246320.png)
 
+### 3.3.6 -XX:+PrintGCDetails：打印详细GC收集日志信息
 
+详细见2.12
 
+### 3.3.7 -XX:SurvivorRatio：设置新生代中eden和S0/S1区空间的比例
 
+S0和S1占用相同的空间
 
+默认-XX:+SurvivorRatio = 8 即 Eden : S0 : S1 = 8 : 1 : 1
 
+![image-20201212153716878](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212153716878.png)
 
+如果-XX:+SurvivorRatio = 4 则 Eden : S0 : S1 = 4 : 1 : 1
 
+![image-20201212153741021](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212153741021.png)
 
+### 3.3.8 -XX:NewRatio：设置新生代和老年代在堆中所占比例
 
+NewRatio的值即为老年代的占比，一般用默认
 
+默认 -XX:NewRatio = 2 即 新生代 : 老年代 = 1 : 2
 
+![image-20201212154258096](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212154258096.png)
 
+如果 -XX:NewRatio = 4 即 新生代 : 老年代 = 1 : 4
 
+![image-20201212154330418](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212154330418.png)
+
+### 3.3.9 -XX:MaxTenuringThreshold：设置垃圾最大年龄
+
+默认为15
+
+![image-20201212154444425](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212154444425.png)
+
+![image-20201212154621845](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212154621845.png)
+
+## 3.4 四种引用
+
+![image-20201212160448078](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212160448078.png)
+
+### 3.4.1 强引用
+
+![image-20201212160541427](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212160541427.png)
+
+![image-20201212160902588](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212160902588.png)
+
+obj2引用的对象没有被垃圾回收。
+
+### 3.4.2 软引用
+
+为了降低OOM发生的概率
+
+![image-20201212161040810](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212161040810.png)
+
+![image-20201212161256188](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212161256188.png)
+
+![image-20201212161453101](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212161453101.png)
+
+![image-20201212161538656](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212161538656.png)
+
+内存不够了软引用被回收变成了null
+
+### 3.4.3 弱引用
+
+![image-20201212161811222](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212161811222.png)
+
+![image-20201212161959218](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212161959218.png)
+
+#### 3.4.3.1 软引用和弱引用的适用场景
+
+![image-20201212162415744](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212162415744.png)
+
+#### 3.4.3.2 WeakHashMap
+
+![image-20201212162809409](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212162809409.png)
+
+普通HashMap：
+
+![image-20201212163143880](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212163143880.png)
+
+WeakHashMap：
+
+![image-20201212163348528](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212163348528.png)
+
+### 3.4.4 虚引用
+
+主要在finalize方法时做对象回收的监控，类似于SpringAOP的后置通知
+
+![image-20201212163724764](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212163724764.png)
+
+![image-20201212163821535](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212163821535.png)
+
+#### 3.4.4.1 引用队列
+
+![image-20201212164235699](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212164235699.png)
+
+![image-20201212164539005](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212164539005.png)
+
+![image-20201212164913215](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212164913215.png)
+
+GC时虚引用会被放到引用队列里，可以执行一些后续动作，类似于AOP的后置通知。
+
+![image-20201212165047905](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212165047905.png)
+
+![image-20201212165332416](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212165332416.png)
 
 
 
