@@ -1366,5 +1366,283 @@ GC时虚引用会被放到引用队列里，可以执行一些后续动作，类
 
 ![image-20201212165332416](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201212165332416.png)
 
+## 3.5 OutOfMemoryError
+
+### 3.5.1 StackOverflowError
+
+栈默认514~1024k，方法递归调用超出栈的空间
+
+![image-20201213145415960](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213145415960.png)
+
+![image-20201213145604704](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213145604704.png)
+
+### 3.5.2 OutOfMemoryError: Java heap space
+
+![image-20201213145825666](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213145825666.png)
+
+### 3.5.3 OutOfMemoryError: GC overhead limit exceeded
+
+![image-20201213150226211](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213150226211.png)
+
+![image-20201213151329481](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213151329481.png)
+
+![image-20201213151552560](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213151552560.png)
+
+![image-20201213151515866](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213151515866.png)
+
+GC回收没有明显的效果，就会报错，GC收不收的效果差不多。
+
+### 3.5.4 OutOfMemoryError: Direct buffer memory
+
+![image-20201213152056168](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213152056168.png)
+
+主要出现在NIO中。
+
+Metaspace使用本地内存不在Java堆中，GC会回收。JVM堆内存够用，不会启动GC，所以本地内存也没有被回收，导致被填满。
+
+JVM可以使用的最大直接内存（maxDirectMemory）默认为1/4的本机内存。
+
+![image-20201213152751905](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213152751905.png)
+
+![image-20201213152805693](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213152805693.png)
+
+### 3.5.5 OutOfMemoryError: unable to create new native thread
+
+![image-20201213153226454](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213153226454.png)
+
+![image-20201213153501426](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213153501426.png)
+
+![image-20201213153917307](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213153917307.png)
+
+创建线程为本地方法
+
+![image-20201213153726802](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213153726802.png)
+
+![image-20201213154126995](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213154126995.png)
+
+![image-20201213154240883](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213154240883.png)
+
+### 3.5.6 OutOfMemoryError: Metaspace
+
+元空间是方法区，装类的信息，即类的模板，包括运行时常量池（非字符串常量池）。
+
+![image-20201213155054047](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213155054047.png)
+
+![image-20201213155513373](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213155513373.png)
+
+![image-20201213155545715](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213155545715.png)
+
+使用spring的cglib的动态字节码技术创建静态内部类，加载到metaspace中。
+
+![image-20201213155714885](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213155714885.png)
+
+## 3.6 垃圾回收器
+
+### 3.6.1 垃圾回收器和垃圾回收算法的关系
+
+GC算法（计数法、复制法、标记清除、标记压缩）是内存回收的方法论。垃圾回收器是GC算法的实现。
+
+没有完美的垃圾收集器，针对具体的场景选择合适的垃圾回收器，分代收集。
+
+### 3.6.2 四种垃圾回收器
+
+![image-20201213162354220](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213162354220.png)
+
+#### 3.6.2.1 Serial 串行垃圾回收器
+
+为单线程环境设计，且只使用一个线程回收垃圾，会暂停所有的用户线程。所以不适合服务器环境。
+
+程序 -> GC -> 程序
+
+#### 3.6.2.2 Parallel 并行垃圾回收器
+
+多个垃圾收集线程并行工作，此时用户线程也是暂停的。适用于科学计算、大数据等弱交互的场景。
+
+#### 3.6.2.3 CMS并发垃圾回收器
+
+用户线程和垃圾回收线程同时执行（不一定是并行，可能交替执行），不需要停顿用户线程。适用于对响应时间有要求的场景。
+
+![image-20201213163234647](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213163234647.png)
+
+#### 3.6.2.4 G1
+
+Java9开始的默认垃圾回收器。将堆内存分割成不同的区域然后并发对其进行垃圾回收。
+
+### 3.6.3 查看默认的垃圾回收器
+
+![image-20201213164259782](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213164259782.png)
+
+Java8默认使用parallelGC。
+
+### 3.6.4 Java默认的垃圾回收器
+
+![image-20201213164519119](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213164519119.png)
+
+还有一种UseSerialOldGC已经deprecated了。
+
+![image-20201213165059384](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213165059384.png)
+
+G1不区分新生代和老年代，都可以覆盖。
+
+![image-20201213165439506](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213165439506.png)
+
+新生代老年代的回收算法按照图中的线相互关联
+
+![image-20201213165837080](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213165837080.png)
+
+![image-20201213165932921](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213165932921.png)
+
+### 3.6.5 新生代垃圾回收器
+
+### 3.6.5.1 串行GC（Serial/Serial Copying）
+
+一般不怎么用
+
+![image-20201213170310817](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213170310817.png)
+
+![image-20201213170411477](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213170411477.png)
+
+![image-20201213170438649](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213170438649.png)
+
+![image-20201213170525247](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213170525247.png)
+
+![image-20201213171532781](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171532781.png)
+
+#### 3.6.5.2 并行GC（ParNew）
+
+![image-20201213171013966](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171013966.png)
+
+新生代创建对象较多，所以GC会频繁一些，故使用并行GC。
+
+![image-20201213171242000](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171242000.png)
+
+![image-20201213171058994](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171058994.png)
+
+![image-20201213171316883](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171316883.png)
+
+![image-20201213171446343](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171446343.png)
+
+#### 3.6.5.3 并行GC（Parallel/Parallel Scavenge）
+
+跟ParNew区别：ParNew只是新生代并行，老年代还是串行。Parallel新生代老年代都用并行。
+
+![image-20201213172105010](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172105010.png)
+
+![image-20201213172134935](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172134935.png)
+
+![image-20201213172514283](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172514283.png)
+
+![image-20201213172614389](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172614389.png)
+
+![image-20201213172813245](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172813245.png)
+
+### 3.6.5 老年代垃圾回收器
+
+#### 3.6.5.1 并行GC（Parallel Old/Parallel CMS）
+
+![image-20201213173331998](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213173331998.png)
+
+![image-20201213173531117](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213173531117.png)
+
+![image-20201213172134935](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172134935.png)
+
+#### 3.6.5.2 并发标记清除GC（CMS）
+
+![image-20201213173755712](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213173755712.png)
+
+![image-20201213173913242](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213173913242.png)
+
+![image-20201213173939624](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213173939624.png)
+
+四步过程：
+
+- 初始标记（CMS initial mark）：
+
+  标记GCRoots能直接关联到的对象，速度很快，需要暂停所有工作线程。
+
+- 并发标记（CMS concurrent mark）：
+
+  进行GCRoot跟踪的过程，和用户线程一起工作，不需要暂停工作线程。主要标记过程，标记全部对象。
+
+- 重新标记（CMS remark）：
+
+  为了修正在并发标记期间因用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，需要暂停所有的工作线程。由于并发标记时用户线程依然工作，因此在正式清理前需要再做调整（二次确认）。
+
+- 并发清除（CMS concurrent sweep）：
+
+  清除GCRoots不可达对象，和用户线程一起工作，不需要暂停用户线程。基于标记结果直接清除对象。
+
+由于耗时最长的并发标记和并发清除过程中，垃圾收集线程可以和用户线程在一起并发工作，所以总体上来看CMS收集器的内存回收和用户线程是一起并发地执行
+
+![image-20201213175126705](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175126705.png)
+
+优点：并发收集低停顿
+
+缺点：
+
+![image-20201213175348418](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175348418.png)
+
+![image-20201213175403601](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175403601.png)
+
+![image-20201213175644989](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175644989.png)
+
+![image-20201213175718694](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175718694.png)
+
+#### 3.6.5.3 串行GC（Serial Old/Serial CMS）
+
+![image-20201213175939571](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175939571.png)
+
+基本不用了
+
+### 3.6.6 如何选择垃圾收集器
+
+![image-20201213180406618](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213180406618.png)
+
+![image-20201213180452601](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213180452601.png)
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
