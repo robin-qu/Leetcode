@@ -1506,7 +1506,11 @@ G1不区分新生代和老年代，都可以覆盖。
 
 ![image-20201213170525247](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213170525247.png)
 
-![image-20201213171532781](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171532781.png)
+![image-20201214220728187](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214220728187.png)
+
+![image-20201214220900828](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214220900828.png)
+
+![image-20201214220938187](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214220938187.png)
 
 #### 3.6.5.2 并行GC（ParNew）
 
@@ -1520,11 +1524,13 @@ G1不区分新生代和老年代，都可以覆盖。
 
 ![image-20201213171316883](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171316883.png)
 
-![image-20201213171446343](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213171446343.png)
+![image-20201214221148378](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214221148378.png)
+
+![image-20201214221308711](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214221308711.png)
 
 #### 3.6.5.3 并行GC（Parallel/Parallel Scavenge）
 
-跟ParNew区别：ParNew只是新生代并行，老年代还是串行。Parallel新生代老年代都用并行。
+默认GC。跟ParNew区别：ParNew只是新生代并行，老年代还是串行。Parallel新生代老年代都用并行。
 
 ![image-20201213172105010](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172105010.png)
 
@@ -1534,7 +1540,9 @@ G1不区分新生代和老年代，都可以覆盖。
 
 ![image-20201213172614389](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172614389.png)
 
-![image-20201213172813245](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172813245.png)
+![image-20201214221533070](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214221533070.png)
+
+![image-20201214221630019](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214221630019.png)
 
 ### 3.6.5 老年代垃圾回收器
 
@@ -1542,7 +1550,9 @@ G1不区分新生代和老年代，都可以覆盖。
 
 ![image-20201213173331998](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213173331998.png)
 
-![image-20201213173531117](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213173531117.png)
+![image-20201214221801323](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214221801323.png)
+
+![image-20201214221900258](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214221900258.png)
 
 ![image-20201213172134935](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213172134935.png)
 
@@ -1584,6 +1594,8 @@ G1不区分新生代和老年代，都可以覆盖。
 
 ![image-20201213175403601](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175403601.png)
 
+![image-20201214222007419](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214222007419.png)
+
 ![image-20201213175644989](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175644989.png)
 
 ![image-20201213175718694](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213175718694.png)
@@ -1594,47 +1606,98 @@ G1不区分新生代和老年代，都可以覆盖。
 
 基本不用了
 
+![image-20201214222059695](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214222059695.png)
+
+![image-20201214222129060](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214222129060.png)
+
 ### 3.6.6 如何选择垃圾收集器
 
 ![image-20201213180406618](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213180406618.png)
 
 ![image-20201213180452601](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201213180452601.png)
 
- 
+ ### 3.6.7 G1垃圾回收器
 
+![image-20201214222356380](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214222356380.png)
 
+![image-20201214222439801](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214222439801.png)
 
+堆只分了两部分
 
+![image-20201214222532296](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214222532296.png)
 
+#### 3.6.7.1 之前收集器的特点
 
+- 新生代和老年代都是各自独立且连续的内存块
+- 新生代使用单eden + S0 + S1进行复制算法
+- 老年代收集必须扫描整个老年代区域
+- 以尽可能少而快速的执行GC为设计原则
 
+#### 3.6.7.2 G1
 
+![image-20201214223006179](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214223006179.png)
 
+![image-20201214223029924](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214223029924.png)
 
+![image-20201214223204228](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214223204228.png)
 
+特点：
 
+![image-20201214223411847](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214223411847.png)
 
+#### 3.6.7.2 底层原理
 
+Region区域化垃圾收集器，最大的好处是化整为零，避免全内存扫描，只需要按照区域来扫描即可。
 
+![image-20201214223849006](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214223849006.png)
 
+![image-20201214224035536](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214224035536.png)
 
+![image-20201214224121295](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214224121295.png)
 
+红色表示大对象，如果一个对象特别大，就不让他产生在Eden区，直接去养老区。
 
+![image-20201214224255188](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214224255188.png)
 
+![image-20201214224650535](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214224650535.png)
 
+![image-20201214224736899](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214224736899.png)
 
+![image-20201214224857212](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214224857212.png)
 
+![image-20201214225058190](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214225058190.png)
 
+![image-20201214225223862](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214225223862.png)
 
+![image-20201214225335089](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214225335089.png)
 
+![image-20201214225357665](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214225357665.png)
 
+#### 3.6.7.3 常用参数
 
+![image-20201214225530535](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214225530535.png)
 
+![image-20201214225542929](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214225542929.png)
 
+![image-20201214225638953](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214225638953.png)
 
+#### 3.6.7.4 与CMS比较
 
+![image-20201214225730292](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214225730292.png)
 
+### 3.6.8 在SpringBoot中的实际应用
 
+内部启动时JVM调优：
+
+![image-20201214230545589](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214230545589.png)
+
+外部启动：
+
+![image-20201214230634359](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214230634359.png)
+
+![image-20201214230808873](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214230808873.png)
+
+![image-20201214230831243](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214230831243.png)
 
 
 
