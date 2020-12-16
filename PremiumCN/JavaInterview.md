@@ -1699,13 +1699,85 @@ Region区域化垃圾收集器，最大的好处是化整为零，避免全内�
 
 ![image-20201214230831243](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201214230831243.png)
 
+## 3.7 环境调试
 
+生产环境服务器变慢，诊断思路和性能评估。
 
+### 3.7.1 整机：top
 
+![image-20201215222627597](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215222627597.png)
 
+查看cpu和内存
 
+load average：系统的负载均衡。三个值代表系统一分钟、五分钟、十五分钟的平均负载值，如果相加除以三乘百分百高于60%，说明系统负担压力重。
 
+uptime：查看系统性能命令的精简版
 
+### 3.7.2 CPU：vmstat
 
+![image-20201215223246920](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215223246920.png)
 
+![image-20201215223326358](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215223326358.png)
+
+![image-20201215223545462](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215223545462.png)
+
+查看所有cpu核信息：mpstat -P ALL 2
+
+![image-20201215223900623](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215223900623.png)
+
+idle值越高越好
+
+每个进程使用cpu的用量分解信息：pidstat -u 1 -p 进程号（每1秒采样一次）
+
+![image-20201215224147140](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215224147140.png)
+
+### 3.7.3 内存：free
+
+应用程序可用的内存
+
+![image-20201215224336009](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215224336009.png)
+
+查看额外：pidstat -p 进程号 -r 采样间隔秒数
+
+![image-20201215224542443](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215224542443.png)
+
+### 3.7.4 硬盘：df
+
+![image-20201215224630532](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215224630532.png)
+
+### 3.7.5 磁盘IO：iostat
+
+![image-20201215224800931](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215224800931.png)
+
+![image-20201215224850610](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215224850610.png)
+
+查看额外：pidstat -d 采样间隔秒数 -p 进程号 
+
+![image-20201215225112009](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215225112009.png)
+
+### 3.7.5 网络IO：ifstat
+
+![image-20201215225309659](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215225309659.png)
+
+### 3.7.6 定位思路
+
+- 先用top命令找出cpu占比最高的（记录pid）
+
+- ps -ef或者jps进一步定位，查看具体信息
+
+- 定位到具体的线程和代码：ps -mp 进程号 -o THREAD,tid,TIME
+
+  -m：显示所有线程
+
+  -p：pid进程使用cpu的事件
+
+  -o：之后是用户自定义格式
+
+  ![image-20201215225921589](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215225921589.png)
+
+- 将线程id转化成十六进制（英文小写格式）
+
+- jstack 进程id | grep tid（十六进制线程id英文小写） -A60：定位到代码行数
+
+  ![image-20201215230418218](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201215230418218.png)
 
