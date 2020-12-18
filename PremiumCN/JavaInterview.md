@@ -329,9 +329,27 @@ ABA问题DEMO：
 
 ![image-20201201225841177](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201201225841177.png)ReentrantLock和synchronized是两个典型的可重入锁
 
+![image-20201217214853420](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217214853420.png)
+
+必须是同一个对象锁
+
+进入指进入同步域，即同步代码块、同步方法或显示锁锁定的代码
+
 可重入锁的最大作用是避免死锁
 
-#### 1.6.2.2 DEMO
+#### 1.6.2.2 DEMO1：同步代码块
+
+![image-20201217215653471](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217215653471.png)
+
+LockA为同一把锁，不需要等到锁释放，可以重入，同一个线程可以多次获得属于自己的同一把锁
+
+![image-20201217215813912](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217215813912.png)
+
+#### 1.6.2.3 DEMO2：同步方法
+
+![image-20201217215937619](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217215937619.png)
+
+#### 1.6.2.2 DEMO3
 
 ![image-20201202214026425](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202214026425.png)
 
@@ -354,6 +372,16 @@ ABA问题DEMO：
 BTW：可以锁多次，只要能配对
 
 ![image-20201202215342494](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201202215342494.png)
+
+实现机制：
+
+![image-20201217221344166](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217221344166.png)
+
+![image-20201217221404191](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217221404191.png)
+
+![image-20201217221427028](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217221427028.png)
+
+加锁几次就要解锁几次，加锁解锁次数完全匹配才能释放锁，否则会造成死锁。
 
 ### 1.6.3 自旋锁
 
@@ -836,6 +864,126 @@ DEMO:
 ![image-20201206164534926](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206164534926.png)
 
 ![image-20201206164733462](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201206164733462.png)
+
+
+
+## 1.10 LockSupport
+
+![image-20201217221805712](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217221805712.png)
+
+park()和unpark()相当于wait()和notify()
+
+### 1.10.1 三种让线程等待或唤醒的方法：
+
+![image-20201217222423698](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217222423698.png)
+
+- Object类中的wait()方法让线程等待，notify()方法唤醒线程
+
+  ![image-20201217222032498](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217222032498.png)
+
+  局限1：没有synchronized不能使用wait和notify方法，wait和notify必须在同步代码块或同步方法里且成对使用
+
+  ![image-20201217222153994](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217222153994.png)
+
+  局限2：wait和notify有先后顺序，先wait再notify才可以
+
+  ![image-20201217222231488](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217222231488.png)
+
+  ![image-20201217222248106](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217222248106.png)
+
+- JUC包下的Condition的await()方法让线程等待，signal()方法唤醒线程
+
+  ![image-20201217222840206](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217222840206.png)
+
+  ![image-20201217222912493](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217222912493.png)
+
+  ![image-20201217222946367](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217222946367.png)
+
+  ![image-20201217223044014](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217223044014.png)
+
+  局限1：必须与lock配合使用，线程先要获得并持有锁，，必须再锁块中
+
+  ![image-20201217223130110](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217223130110.png)
+
+  局限2：await和signal也有先后顺序，必须先等待后唤醒
+
+  ![image-20201217223235345](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217223235345.png)
+
+- LockSupport类可以阻塞当前线程以及唤醒指定被阻塞的线程
+
+### 1.10.2 LockSupport
+
+通过park()和unpark(thread)方法来实现阻塞和唤醒线程的操作。
+
+![image-20201217223719746](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217223719746.png)
+
+- park()/park(Object blocker)：阻塞当前线程/阻塞传入的具体线程
+
+![image-20201217224010132](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217224010132.png)
+
+- unpark(Thread thread)：唤醒处于阻塞状态的指定线程
+
+![image-20201217224151084](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217224151084.png)
+
+![image-20201217224526336](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217224526336.png)
+
+![image-20201217224613030](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217224613030.png)
+
+![image-20201217224730692](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217224730692.png)
+
+交换park和unpark的顺序，可以先通知再阻塞
+
+![image-20201217225040066](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217225040066.png)
+
+![image-20201217225057649](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217225057649.png)
+
+时间戳一样，park()相当于没执行
+
+![image-20201217225325839](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217225325839.png)
+
+优点1：无锁块要求
+
+优点2：支持先通知后等待
+
+### 1.10.3 底层原理：
+
+![image-20201217225448604](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217225448604.png)
+
+![image-20201217225701825](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217225701825.png)
+
+第二个park阻塞了线程a，说明unpark不能累加
+
+![image-20201217225744394](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217225744394.png)
+
+![image-20201217225828600](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217225828600.png)
+
+![image-20201217225840422](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217225840422.png)
+
+
+
+## 1.11 AQS(Abstract Queued Synchronizer)
+
+用来构建锁或者其他同步器组件（CountDownLatch、读写锁等组件）的重量级基础框架及整个JUC的基石，通过内置的FIFO队列来完成资源获取线程的排队工作，并通过一个int类型变量表示持有锁的状态。（变量+队列）
+
+![image-20201217230830567](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217230830567.png)
+
+![image-20201217230322684](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217230322684.png)
+
+### 1.11.1 作用
+
+![image-20201217231052201](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217231052201.png)
+
+![image-20201217231104823](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217231104823.png)
+
+![image-20201217231122040](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217231122040.png)
+
+![image-20201217231136921](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217231136921.png)
+
+![image-20201217231205016](C:\Users\RobinQu\AppData\Roaming\Typora\typora-user-images\image-20201217231205016.png)
+
+ 
+
+
 
 
 
