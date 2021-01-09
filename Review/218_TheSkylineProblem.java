@@ -109,7 +109,30 @@ class Solution {
         while (!pq.isEmpty()) {
             Pos curr = pq.poll();
             if (curr.isLeft == 1) {
-                if (heights.isEmpty() || heights.peek() < curr.y) {
+                if (heights.isEmpty() || heights.peek() < curr.y) {class Solution {
+                    public int majorityElement(int[] nums) {
+                        if (nums == null || nums.length == 0) {
+                            return 0;
+                        }
+                
+                        int n = nums.length;
+                
+                        int res = 0;
+                        int count = 0;
+                        for (int num : nums) {
+                            if (count == 0) {
+                                count++;
+                                res = num;
+                            } else if (num == res) {
+                                count++;
+                            } else {
+                                count--;
+                            }
+                        }
+                
+                        return res;
+                    }
+                }
                     res.add(Arrays.asList(curr.x, curr.y));
                 }
                 heights.offer(curr.y);
